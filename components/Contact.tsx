@@ -46,7 +46,7 @@ export default function Contact() {
       >
         <div className="section-label">05 / Contact</div>
         <h2 className="section-heading">
-          Let's <span className="italic gradient-text">talk</span>.
+          Let&apos;s <span className="italic gradient-text">talk</span>.
         </h2>
       </motion.div>
 
@@ -183,7 +183,7 @@ export default function Contact() {
                 "Sending..."
               ) : status === "success" ? (
                 <>
-                  <CheckCircle2 size={16} /> Sent! I'll reply soon.
+                  <CheckCircle2 size={16} /> Sent! I&apos;ll reply soon.
                 </>
               ) : (
                 <>

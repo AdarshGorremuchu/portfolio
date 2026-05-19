@@ -18,7 +18,7 @@ export default function Experience() {
       >
         <div className="section-label">02 / Experience</div>
         <h2 className="section-heading">
-          Where I've <span className="italic gradient-text">shipped</span>.
+          Where I&apos;ve <span className="italic gradient-text">shipped</span>.
         </h2>
       </motion.div>
 

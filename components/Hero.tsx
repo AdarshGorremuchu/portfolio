@@ -50,8 +50,8 @@ export default function Hero() {
           className="font-display text-[clamp(2.5rem,8vw,6rem)] leading-[1.05] tracking-tight mb-6"
         >
           <span className="block text-ink-primary">{personal.name}</span>
-          <span className="block gradient-text italic">
-            {personal.title.toLowerCase()}.
+          <span className="block gradient-text italic text-[clamp(1.75rem,4vw,3.5rem)]">
+            {personal.title}.
           </span>
         </motion.h1>
 

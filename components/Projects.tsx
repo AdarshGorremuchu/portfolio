@@ -21,7 +21,7 @@ export default function Projects() {
       >
         <div className="section-label">03 / Projects</div>
         <h2 className="section-heading">
-          Things I've <span className="italic gradient-text">built</span>.
+          Things I&apos;ve <span className="italic gradient-text">built</span>.
         </h2>
       </motion.div>
 
