@@ -34,7 +34,7 @@ export default function Skills() {
       >
         <div className="section-label">04 / Skills</div>
         <h2 className="section-heading">
-          The <span className="italic gradient-text">toolkit</span>.
+          The <span className="gradient-text">toolkit</span>.
         </h2>
       </motion.div>
 

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Instrument_Serif, JetBrains_Mono } from "next/font/google";
+import { Inter, Barlow_Condensed, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({
@@ -8,8 +8,8 @@ const inter = Inter({
   display: "swap",
 });
 
-const instrumentSerif = Instrument_Serif({
-  weight: "400",
+const barlowCondensed = Barlow_Condensed({
+  weight: ["700", "800", "900"],
   subsets: ["latin"],
   variable: "--font-display",
   display: "swap",
@@ -68,7 +68,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${instrumentSerif.variable} ${jetbrainsMono.variable}`}
+      className={`${inter.variable} ${barlowCondensed.variable} ${jetbrainsMono.variable}`}
     >
       <body>
         <div className="noise" />

@@ -34,10 +34,11 @@ export default function Navbar() {
       <nav className="max-w-[1200px] mx-auto px-6 md:px-8 h-16 flex items-center justify-between">
         <a
           href="#hero"
-          className="font-display text-xl tracking-tight flex items-center gap-2"
+          className="font-sans text-base font-black uppercase tracking-widest flex items-center gap-1.5"
         >
-          <span className="text-accent-glow">~</span>
-          <span>adarsh</span>
+          <span className="text-accent">AG</span>
+          <span className="w-px h-4 bg-accent/40" />
+          <span className="text-ink-primary text-xs font-mono tracking-widest">DEV</span>
         </a>
 
         <ul className="hidden md:flex items-center gap-8">
@@ -56,7 +57,7 @@ export default function Navbar() {
               href="/resume.pdf"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm font-mono px-4 py-2 rounded-md border border-accent/40 text-accent-glow hover:bg-accent/10 transition-all"
+              className="text-sm font-mono px-5 py-2 rounded-full bg-accent text-white hover:bg-accent-glow transition-all font-medium"
             >
               Resume ↗
             </a>
@@ -97,7 +98,7 @@ export default function Navbar() {
                   href="/resume.pdf"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block py-2 font-mono text-accent-glow"
+                  className="block py-2 font-mono text-accent"
                 >
                   Resume ↗
                 </a>

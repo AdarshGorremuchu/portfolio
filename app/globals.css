@@ -4,7 +4,7 @@
 
 :root {
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
-  --font-display: "Instrument Serif", Georgia, serif;
+  --font-display: "Barlow Condensed", "Inter", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", "Fira Code", monospace;
 }
 
@@ -18,8 +18,8 @@ html {
 }
 
 body {
-  background: #0a0a0f;
-  color: #e6e7ee;
+  background: #070c16;
+  color: #ffffff;
   font-family: var(--font-sans);
   overflow-x: hidden;
 }
@@ -30,19 +30,19 @@ body {
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #0a0a0f;
+  background: #070c16;
 }
 ::-webkit-scrollbar-thumb {
-  background: #2a2a3a;
+  background: #1e2d45;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #3a3a4a;
+  background: #253655;
 }
 
 /* Selection */
 ::selection {
-  background: rgba(99, 102, 241, 0.35);
+  background: rgba(232, 93, 4, 0.35);
   color: #ffffff;
 }
 
@@ -54,18 +54,14 @@ body {
   background-size: 60px 60px;
 }
 
-/* Aurora / spotlight orb */
+/* Aurora / spotlight orb — removed in VISTA.IO style */
 .orb {
-  position: absolute;
-  border-radius: 9999px;
-  filter: blur(80px);
-  opacity: 0.4;
-  pointer-events: none;
+  display: none;
 }
 
 /* Gradient text */
 .gradient-text {
-  background: linear-gradient(120deg, #e6e7ee 0%, #818cf8 50%, #22d3ee 100%);
+  background: linear-gradient(120deg, #ffffff 0%, #fb8500 50%, #e85d04 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -82,7 +78,7 @@ body {
   inset: -1px;
   border-radius: inherit;
   padding: 1px;
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.4), rgba(34, 211, 238, 0.2), transparent 60%);
+  background: linear-gradient(135deg, rgba(232, 93, 4, 0.45), rgba(251, 133, 0, 0.2), transparent 60%);
   -webkit-mask:
     linear-gradient(#fff 0 0) content-box,
     linear-gradient(#fff 0 0);
@@ -124,17 +120,17 @@ body {
   display: inline-flex;
   align-items: center;
   padding: 0.35rem 0.75rem;
-  background: rgba(99, 102, 241, 0.08);
-  border: 1px solid rgba(99, 102, 241, 0.2);
+  background: rgba(232, 93, 4, 0.08);
+  border: 1px solid rgba(232, 93, 4, 0.22);
   border-radius: 6px;
   font-size: 0.8125rem;
-  color: #c7d2fe;
+  color: #fb8500;
   font-family: var(--font-mono);
   transition: all 0.2s ease;
 }
 .tag:hover {
-  background: rgba(99, 102, 241, 0.15);
-  border-color: rgba(99, 102, 241, 0.4);
+  background: rgba(232, 93, 4, 0.15);
+  border-color: rgba(232, 93, 4, 0.4);
 }
 
 /* Section label */
@@ -144,7 +140,7 @@ body {
   gap: 0.5rem;
   font-size: 0.875rem;
   font-family: var(--font-mono);
-  color: #818cf8;
+  color: #e85d04;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   margin-bottom: 1rem;
@@ -154,15 +150,41 @@ body {
   content: "";
   width: 24px;
   height: 1px;
-  background: linear-gradient(90deg, transparent, #818cf8);
+  background: linear-gradient(90deg, transparent, #e85d04);
 }
 
 /* Section heading */
 .section-heading {
-  font-family: var(--font-display);
+  font-family: var(--font-sans);
   font-size: clamp(2rem, 5vw, 3.5rem);
-  font-weight: 400;
+  font-weight: 800;
   line-height: 1.1;
   letter-spacing: -0.02em;
   margin-bottom: 3rem;
+  text-transform: uppercase;
+}
+
+/* VISTA.IO editorial hero words */
+.hero-word {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 900;
+  text-transform: uppercase;
+  line-height: 0.88;
+  color: #ffffff;
+}
+
+.hero-word--spread {
+  letter-spacing: 0.35em;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/* Particle canvas */
+#particle-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
 }

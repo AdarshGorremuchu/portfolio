@@ -14,7 +14,7 @@ export default function About() {
       >
         <div className="section-label">01 / About</div>
         <h2 className="section-heading">
-          Engineer at the intersection of <span className="italic gradient-text">AI</span>,
+          Engineer at the intersection of <span className="gradient-text">AI</span>,
           <br />
           data, and cloud.
         </h2>

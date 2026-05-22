@@ -8,24 +8,24 @@ module.exports = {
     extend: {
       colors: {
         bg: {
-          DEFAULT: "#0a0a0f",
-          soft: "#0f0f17",
-          card: "#13131c",
-          elev: "#1a1a25",
+          DEFAULT: "#070c16",
+          soft: "#0b1120",
+          card: "#0e1526",
+          elev: "#141d30",
         },
         accent: {
-          DEFAULT: "#6366f1",
-          glow: "#818cf8",
-          cyan: "#22d3ee",
+          DEFAULT: "#e85d04",
+          glow: "#fb8500",
+          warm: "#ffb703",
         },
         ink: {
-          primary: "#e6e7ee",
-          secondary: "#a1a1b3",
-          muted: "#6b6b80",
+          primary: "#ffffff",
+          secondary: "#9ba3b2",
+          muted: "#586070",
         },
         border: {
-          subtle: "rgba(255,255,255,0.06)",
-          strong: "rgba(255,255,255,0.12)",
+          subtle: "rgba(255,255,255,0.05)",
+          strong: "rgba(255,255,255,0.10)",
         },
       },
       fontFamily: {
@@ -56,6 +56,9 @@ module.exports = {
           "0%": { backgroundPosition: "-200% 0" },
           "100%": { backgroundPosition: "200% 0" },
         },
+      },
+      letterSpacing: {
+        editorial: "0.35em",
       },
       backgroundImage: {
         "grid-pattern":

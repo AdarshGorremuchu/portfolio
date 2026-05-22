@@ -5,9 +5,9 @@ import { ArrowUpRight, Sparkles } from "lucide-react";
 import { projects } from "@/lib/data";
 
 const accentMap: Record<string, string> = {
-  indigo: "from-indigo-500/20 to-transparent",
-  cyan: "from-cyan-500/20 to-transparent",
-  purple: "from-purple-500/20 to-transparent",
+  indigo: "from-orange-600/20 to-transparent",
+  cyan: "from-amber-500/20 to-transparent",
+  purple: "from-orange-500/20 to-transparent",
 };
 
 export default function Projects() {
@@ -21,7 +21,7 @@ export default function Projects() {
       >
         <div className="section-label">03 / Projects</div>
         <h2 className="section-heading">
-          Things I&apos;ve <span className="italic gradient-text">built</span>.
+          Things I&apos;ve <span className="gradient-text">built</span>.
         </h2>
       </motion.div>
 
@@ -72,7 +72,7 @@ export default function Projects() {
                     key={i}
                     className="flex gap-2 text-sm text-ink-secondary"
                   >
-                    <span className="text-accent-cyan mt-1">→</span>
+                    <span className="text-accent mt-1">→</span>
                     <span>{h}</span>
                   </li>
                 ))}

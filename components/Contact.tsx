@@ -46,7 +46,7 @@ export default function Contact() {
       >
         <div className="section-label">05 / Contact</div>
         <h2 className="section-heading">
-          Let&apos;s <span className="italic gradient-text">talk</span>.
+          Let&apos;s <span className="gradient-text">talk</span>.
         </h2>
       </motion.div>
 
