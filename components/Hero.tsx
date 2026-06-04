@@ -1,235 +1,226 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { ArrowDown, Mail, MapPin } from "lucide-react";
+import { Linkedin, Github, Mail } from "lucide-react";
 import { personal } from "@/lib/data";
 
-function ParticleCanvas() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-    const c = ctx;
-
-    let animId: number;
-    let W = 0,
-      H = 0;
-
-    interface Particle {
-      x: number;
-      y: number;
-      size: number;
-      opacity: number;
-      speedX: number;
-      speedY: number;
-    }
-
-    let particles: Particle[] = [];
-
-    const el = canvas;
-
-    function resize() {
-      W = el.offsetWidth;
-      H = el.offsetHeight;
-      el.width = W;
-      el.height = H;
-    }
-
-    function init() {
-      resize();
-      particles = [];
-      const count = Math.floor((W * H) / 8000);
-      for (let i = 0; i < count; i++) {
-        particles.push({
-          x: Math.random() * W,
-          y: Math.random() * H,
-          size: Math.random() * 1.5 + 0.3,
-          opacity: Math.random() * 0.6 + 0.1,
-          speedX: (Math.random() - 0.5) * 0.15,
-          speedY: (Math.random() - 0.5) * 0.15,
-        });
-      }
-    }
-
-    function draw() {
-      c.clearRect(0, 0, W, H);
-      for (const p of particles) {
-        c.beginPath();
-        c.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        c.fillStyle = `rgba(255,255,255,${p.opacity})`;
-        c.fill();
-        p.x += p.speedX;
-        p.y += p.speedY;
-        if (p.x < 0) p.x = W;
-        if (p.x > W) p.x = 0;
-        if (p.y < 0) p.y = H;
-        if (p.y > H) p.y = 0;
-      }
-      animId = requestAnimationFrame(draw);
-    }
-
-    init();
-    draw();
-
-    const ro = new ResizeObserver(init);
-    ro.observe(el);
-
-    return () => {
-      cancelAnimationFrame(animId);
-      ro.unobserve(el);
-    };
-  }, []);
-
-  return <canvas ref={canvasRef} id="particle-canvas" />;
-}
+const socials = [
+  { href: personal.linkedin, icon: <Linkedin size={22} />, label: "LinkedIn" },
+  { href: `mailto:${personal.email}`, icon: <Mail size={22} />, label: "Email" },
+];
 
 export default function Hero() {
-  const nameParts = personal.name.toUpperCase().split(" ");
-
   return (
     <section
       id="hero"
       className="relative min-h-screen flex items-center overflow-hidden bg-bg"
     >
-      {/* Layer 0: particle canvas */}
-      <ParticleCanvas />
+      {/* ── Geometric decorations ── */}
 
-      {/* Layer 1: radial vignette — fades particles at edges */}
-      <div
-        className="absolute inset-0 pointer-events-none z-[1]"
+      {/* top-left: partial circle large purple */}
+      <motion.div
+        animate={{ y: [0, -14, 0], rotate: [0, 5, 0] }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        className="geo"
         style={{
-          background:
-            "radial-gradient(ellipse 80% 60% at 50% 50%, transparent 40%, rgba(7,12,22,0.88) 100%)",
+          top: "8%",
+          left: "-3%",
+          width: 180,
+          height: 180,
+          borderRadius: "50%",
+          background: "#6c5ce7",
+          clipPath: "polygon(50% 0%, 100% 0%, 100% 100%, 50% 100%)",
         }}
       />
 
-      {/* Layer 2: content */}
-      <div className="section relative z-10 w-full pt-28">
-        {/* Available badge */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="flex items-center gap-3 mb-8"
-        >
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
-          </span>
-          <span className="text-xs font-mono text-ink-secondary uppercase tracking-widest">
-            Available for new opportunities
-          </span>
-        </motion.div>
+      {/* top-left: diagonal bar light lavender */}
+      <motion.div
+        animate={{ rotate: ["-20deg", "-15deg", "-20deg"] }}
+        transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
+        className="geo"
+        style={{
+          top: "4%",
+          left: "6%",
+          width: 90,
+          height: 22,
+          borderRadius: 4,
+          background: "#ebebff",
+          transform: "rotate(-20deg)",
+        }}
+      />
 
-        {/* Editorial name — each word drops in as a full block */}
-        <div className="mb-6 overflow-hidden">
-          {nameParts.map((word, i) => (
-            <motion.span
-              key={word}
-              className="hero-word"
-              style={{ fontSize: "clamp(3.5rem, 10vw, 9rem)" }}
-              initial={{ opacity: 0, y: 60 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                duration: 0.8,
-                delay: 0.15 + i * 0.12,
-                ease: [0.16, 1, 0.3, 1],
-              }}
-            >
-              {word}
-            </motion.span>
-          ))}
-        </div>
+      {/* top-center: circle outline lavender */}
+      <div
+        className="geo"
+        style={{
+          top: "18%",
+          left: "35%",
+          width: 36,
+          height: 36,
+          borderRadius: "50%",
+          border: "3px solid #ebebff",
+        }}
+      />
 
-        {/* Title — spread all-caps editorial line */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.9, delay: 0.5 }}
-          className="mb-10 overflow-hidden"
-        >
-          <span
-            className="hero-word hero-word--spread"
-            style={{ fontSize: "clamp(0.85rem, 2.2vw, 1.4rem)" }}
-          >
-            {personal.title.toUpperCase()}
-          </span>
-        </motion.div>
+      {/* top-right: large C-shape purple */}
+      <motion.div
+        animate={{ y: [0, 10, 0], rotate: [0, -4, 0] }}
+        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+        className="geo"
+        style={{
+          top: "5%",
+          right: "-2%",
+          width: 200,
+          height: 200,
+          borderRadius: "50%",
+          border: "48px solid #6c5ce7",
+          clipPath: "polygon(0% 10%, 55% 10%, 55% 90%, 0% 90%)",
+        }}
+      />
 
-        {/* Tagline */}
+      {/* top-right: rectangle bar lavender */}
+      <motion.div
+        animate={{ rotate: ["18deg", "22deg", "18deg"] }}
+        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+        className="geo"
+        style={{
+          top: "10%",
+          right: "22%",
+          width: 80,
+          height: 18,
+          borderRadius: 4,
+          background: "#ebebff",
+          transform: "rotate(18deg)",
+        }}
+      />
+
+      {/* middle-left: circle outline tiny lavender */}
+      <div
+        className="geo"
+        style={{
+          top: "52%",
+          left: "2%",
+          width: 28,
+          height: 28,
+          borderRadius: "50%",
+          border: "3px solid #ebebff",
+        }}
+      />
+
+      {/* bottom-left: half-circle purple */}
+      <motion.div
+        animate={{ y: [0, 8, 0] }}
+        transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }}
+        className="geo"
+        style={{
+          bottom: "8%",
+          left: "5%",
+          width: 80,
+          height: 80,
+          borderRadius: "50%",
+          background: "#6c5ce7",
+          clipPath: "polygon(0% 50%, 100% 50%, 100% 100%, 0% 100%)",
+        }}
+      />
+
+      {/* bottom-center: diagonal bar lavender */}
+      <motion.div
+        animate={{ rotate: ["-12deg", "-8deg", "-12deg"] }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        className="geo"
+        style={{
+          bottom: "18%",
+          left: "42%",
+          width: 70,
+          height: 16,
+          borderRadius: 4,
+          background: "#ebebff",
+          transform: "rotate(-12deg)",
+        }}
+      />
+
+      {/* bottom-center: solid circle purple */}
+      <motion.div
+        animate={{ scale: [1, 1.1, 1] }}
+        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+        className="geo"
+        style={{
+          bottom: "12%",
+          left: "55%",
+          width: 44,
+          height: 44,
+          borderRadius: "50%",
+          background: "#6c5ce7",
+        }}
+      />
+
+      {/* bottom-right: circle outline lavender */}
+      <div
+        className="geo"
+        style={{
+          bottom: "15%",
+          right: "8%",
+          width: 90,
+          height: 90,
+          borderRadius: "50%",
+          border: "3px solid #ebebff",
+        }}
+      />
+
+      {/* ── Content ── */}
+      <div className="section relative z-10 w-full pt-20">
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.65 }}
-          className="text-base md:text-lg text-ink-secondary max-w-xl leading-relaxed mb-10"
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="text-sm font-semibold text-ink-secondary mb-4"
+        >
+          Welcome to my world
+        </motion.p>
+
+        <motion.h1
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.2 }}
+          className="text-[clamp(2.4rem,6vw,4.2rem)] font-bold leading-tight text-ink-primary mb-6"
+        >
+          I&apos;m {personal.name.split(" ")[0]},<br />
+          Glad to see you!
+        </motion.h1>
+
+        <motion.p
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.35 }}
+          className="text-lg text-ink-secondary max-w-xl leading-relaxed mb-10"
         >
           {personal.tagline}
         </motion.p>
 
-        {/* Meta row */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.75 }}
-          className="flex flex-wrap items-center gap-6 mb-10 text-xs font-mono text-ink-muted uppercase tracking-widest"
+          transition={{ duration: 0.6, delay: 0.5 }}
         >
-          <span className="flex items-center gap-2">
-            <MapPin size={12} className="text-accent" />
-            {personal.location}
-          </span>
-          <a
-            href={`mailto:${personal.email}`}
-            className="flex items-center gap-2 hover:text-ink-primary transition-colors"
-          >
-            <Mail size={12} className="text-accent" />
-            {personal.email}
-          </a>
-        </motion.div>
-
-        {/* CTA row */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.88 }}
-          className="flex flex-wrap gap-4"
-        >
-          <a
-            href="#projects"
-            className="group inline-flex items-center gap-2 px-7 py-3.5 bg-accent text-white rounded-full font-sans font-semibold text-sm uppercase tracking-wider hover:bg-accent-glow transition-all"
-          >
-            View My Work
-            <ArrowDown
-              size={14}
-              className="group-hover:translate-y-0.5 transition-transform"
-            />
-          </a>
-          <a
-            href="#contact"
-            className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full font-sans font-semibold text-sm uppercase tracking-wider border border-white/15 text-ink-primary hover:border-accent/60 hover:bg-accent/5 transition-all"
-          >
-            Get in Touch
-          </a>
+          <p className="text-xs font-bold tracking-widest uppercase text-accent mb-4">
+            Let&apos;s Connect
+          </p>
+          <div className="flex items-center gap-4">
+            {socials.map((s) => (
+              <a
+                key={s.label}
+                href={s.href}
+                target={s.href.startsWith("http") ? "_blank" : undefined}
+                rel="noopener noreferrer"
+                aria-label={s.label}
+                className="w-11 h-11 flex items-center justify-center rounded-full border-2 border-ink-primary text-ink-primary hover:border-accent hover:text-accent hover:bg-accent/5 transition-all"
+              >
+                {s.icon}
+              </a>
+            ))}
+          </div>
         </motion.div>
       </div>
-
-      {/* Scroll indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.4 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 text-ink-muted"
-      >
-        <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 2, repeat: Infinity }}
-        >
-          <ArrowDown size={18} />
-        </motion.div>
-      </motion.div>
     </section>
   );
 }

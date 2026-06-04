@@ -8,61 +8,53 @@ module.exports = {
     extend: {
       colors: {
         bg: {
-          DEFAULT: "#070c16",
-          soft: "#0b1120",
-          card: "#0e1526",
-          elev: "#141d30",
+          DEFAULT: "#f9f9fc",
+          soft: "#f0f0f8",
+          card: "#ffffff",
+          contact: "#6c5ce7",
         },
         accent: {
-          DEFAULT: "#e85d04",
-          glow: "#fb8500",
-          warm: "#ffb703",
+          DEFAULT: "#6c5ce7",
+          light: "#ebebff",
+          hover: "#5a4bd1",
         },
         ink: {
-          primary: "#ffffff",
-          secondary: "#9ba3b2",
-          muted: "#586070",
+          primary: "#1a2157",
+          secondary: "#4a5568",
+          muted: "#718096",
+          white: "#ffffff",
         },
         border: {
-          subtle: "rgba(255,255,255,0.05)",
-          strong: "rgba(255,255,255,0.10)",
+          subtle: "rgba(0,0,0,0.06)",
+          strong: "rgba(0,0,0,0.12)",
         },
       },
       fontFamily: {
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],
-        display: ["var(--font-display)", "serif"],
+        display: ["var(--font-display)", "system-ui", "sans-serif"],
         mono: ["var(--font-mono)", "monospace"],
       },
       animation: {
-        "fade-up": "fadeUp 0.8s ease-out forwards",
-        "fade-in": "fadeIn 1s ease-out forwards",
-        "glow-pulse": "glowPulse 4s ease-in-out infinite",
-        "shimmer": "shimmer 3s linear infinite",
+        "fade-up": "fadeUp 0.7s ease-out forwards",
+        "fade-in": "fadeIn 0.8s ease-out forwards",
+        "float": "float 6s ease-in-out infinite",
+        "float-slow": "float 9s ease-in-out infinite",
+        "float-slower": "float 12s ease-in-out infinite",
       },
       keyframes: {
         fadeUp: {
-          "0%": { opacity: "0", transform: "translateY(20px)" },
+          "0%": { opacity: "0", transform: "translateY(24px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
         fadeIn: {
           "0%": { opacity: "0" },
           "100%": { opacity: "1" },
         },
-        glowPulse: {
-          "0%, 100%": { opacity: "0.4" },
-          "50%": { opacity: "0.8" },
+        float: {
+          "0%, 100%": { transform: "translateY(0px) rotate(0deg)" },
+          "33%": { transform: "translateY(-12px) rotate(3deg)" },
+          "66%": { transform: "translateY(6px) rotate(-2deg)" },
         },
-        shimmer: {
-          "0%": { backgroundPosition: "-200% 0" },
-          "100%": { backgroundPosition: "200% 0" },
-        },
-      },
-      letterSpacing: {
-        editorial: "0.35em",
-      },
-      backgroundImage: {
-        "grid-pattern":
-          "linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)",
       },
     },
   },

@@ -2,202 +2,141 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Mail, Linkedin, Phone, Send, CheckCircle2 } from "lucide-react";
+import { Send, CheckCircle2 } from "lucide-react";
 import { personal } from "@/lib/data";
 
 export default function Contact() {
-  const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">(
-    "idle"
-  );
+  const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setStatus("sending");
-
     const form = e.currentTarget;
     const data = new FormData(form);
-
     try {
-      // Replace YOUR_FORM_ID below after creating a free form at https://formspree.io
       const res = await fetch("https://formspree.io/f/mwvzvlkz", {
         method: "POST",
         body: data,
         headers: { Accept: "application/json" },
       });
-
-      if (res.ok) {
-        setStatus("success");
-        form.reset();
-      } else {
-        setStatus("error");
-      }
-    } catch {
-      setStatus("error");
-    }
+      if (res.ok) { setStatus("success"); form.reset(); }
+      else setStatus("error");
+    } catch { setStatus("error"); }
   }
 
+  const inputCls =
+    "w-full px-4 py-3 rounded-md bg-white/15 border border-white/30 text-white placeholder:text-white/50 focus:outline-none focus:border-white/70 focus:bg-white/20 transition-all text-sm";
+
   return (
-    <section id="contact" className="section relative">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-100px" }}
-        transition={{ duration: 0.6 }}
-      >
-        <div className="section-label">05 / Contact</div>
-        <h2 className="section-heading">
-          Let&apos;s <span className="gradient-text">talk</span>.
-        </h2>
-      </motion.div>
+    <section
+      id="contact"
+      className="relative overflow-hidden"
+      style={{ background: "#6c5ce7" }}
+    >
+      {/* Background geometric circles */}
+      <div
+        className="absolute pointer-events-none"
+        style={{
+          top: "10%", right: "-4%",
+          width: 220, height: 220,
+          borderRadius: "50%",
+          border: "50px solid rgba(255,255,255,0.12)",
+          clipPath: "polygon(0% 10%, 55% 10%, 55% 90%, 0% 90%)",
+        }}
+      />
+      <div
+        className="absolute pointer-events-none"
+        style={{
+          bottom: "5%", left: "-3%",
+          width: 160, height: 160,
+          borderRadius: "50%",
+          border: "36px solid rgba(255,255,255,0.08)",
+        }}
+      />
+      <div
+        className="absolute pointer-events-none"
+        style={{
+          bottom: "20%", right: "8%",
+          width: 80, height: 80,
+          borderRadius: "50%",
+          border: "20px solid rgba(255,255,255,0.1)",
+        }}
+      />
 
-      <div className="grid md:grid-cols-5 gap-10">
+      <div className="section relative z-10">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="md:col-span-2"
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-12"
         >
-          <p className="text-lg text-ink-secondary leading-relaxed mb-8">
-            Open to AI/ML Engineer, ML Platform, and AI Engineering roles. Reach
-            out about opportunities, collaborations, or just to say hi.
+          <p className="text-white/60 text-xs font-bold uppercase tracking-widest mb-2">
+            Get in touch
           </p>
-
-          <div className="space-y-3">
-            <a
-              href={`mailto:${personal.email}`}
-              className="flex items-center gap-3 p-4 rounded-lg bg-bg-card border border-border-subtle hover:border-accent/40 transition-all group"
-            >
-              <div className="w-10 h-10 rounded-md bg-accent/10 border border-accent/30 flex items-center justify-center text-accent-glow">
-                <Mail size={18} />
-              </div>
-              <div>
-                <div className="text-xs text-ink-muted font-mono">Email</div>
-                <div className="text-sm text-ink-primary group-hover:text-accent-glow transition-colors">
-                  {personal.email}
-                </div>
-              </div>
-            </a>
-
-            <a
-              href={personal.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-3 p-4 rounded-lg bg-bg-card border border-border-subtle hover:border-accent/40 transition-all group"
-            >
-              <div className="w-10 h-10 rounded-md bg-accent/10 border border-accent/30 flex items-center justify-center text-accent-glow">
-                <Linkedin size={18} />
-              </div>
-              <div>
-                <div className="text-xs text-ink-muted font-mono">LinkedIn</div>
-                <div className="text-sm text-ink-primary group-hover:text-accent-glow transition-colors">
-                  /adarsh-gorremuchu
-                </div>
-              </div>
-            </a>
-
-            <a
-              href={`tel:${personal.phone.replace(/\D/g, "")}`}
-              className="flex items-center gap-3 p-4 rounded-lg bg-bg-card border border-border-subtle hover:border-accent/40 transition-all group"
-            >
-              <div className="w-10 h-10 rounded-md bg-accent/10 border border-accent/30 flex items-center justify-center text-accent-glow">
-                <Phone size={18} />
-              </div>
-              <div>
-                <div className="text-xs text-ink-muted font-mono">Phone</div>
-                <div className="text-sm text-ink-primary group-hover:text-accent-glow transition-colors">
-                  {personal.phone}
-                </div>
-              </div>
-            </a>
-          </div>
+          <h2 className="text-white font-bold text-[clamp(1.75rem,4vw,2.75rem)] leading-tight">
+            Contact me
+          </h2>
+          <p className="text-white/75 mt-3 max-w-md mx-auto text-sm leading-relaxed">
+            If you have an application you are interested in developing, a feature
+            that you need coded, I&apos;d love to help with it.
+          </p>
         </motion.div>
 
         <motion.form
           onSubmit={handleSubmit}
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="md:col-span-3 rounded-xl bg-bg-card border border-border-subtle p-7"
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.6, delay: 0.15 }}
+          className="max-w-lg mx-auto space-y-4"
         >
-          <div className="space-y-5">
-            <div className="grid md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-mono text-ink-muted uppercase tracking-wider mb-2">
-                  Name
-                </label>
-                <input
-                  type="text"
-                  name="name"
-                  required
-                  className="w-full px-4 py-3 rounded-md bg-bg-elev border border-border-subtle text-ink-primary placeholder:text-ink-muted focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all"
-                  placeholder="Your name"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-mono text-ink-muted uppercase tracking-wider mb-2">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  required
-                  className="w-full px-4 py-3 rounded-md bg-bg-elev border border-border-subtle text-ink-primary placeholder:text-ink-muted focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all"
-                  placeholder="you@company.com"
-                />
-              </div>
-            </div>
+          <input
+            type="text"
+            name="name"
+            required
+            className={inputCls}
+            placeholder="Name"
+          />
+          <input
+            type="email"
+            name="email"
+            required
+            className={inputCls}
+            placeholder="E-mail"
+          />
+          <textarea
+            name="message"
+            required
+            rows={5}
+            className={inputCls + " resize-none"}
+            placeholder="Write your message here..."
+          />
 
-            <div>
-              <label className="block text-xs font-mono text-ink-muted uppercase tracking-wider mb-2">
-                Company / Role
-              </label>
-              <input
-                type="text"
-                name="company"
-                className="w-full px-4 py-3 rounded-md bg-bg-elev border border-border-subtle text-ink-primary placeholder:text-ink-muted focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all"
-                placeholder="Optional"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-mono text-ink-muted uppercase tracking-wider mb-2">
-                Message
-              </label>
-              <textarea
-                name="message"
-                required
-                rows={5}
-                className="w-full px-4 py-3 rounded-md bg-bg-elev border border-border-subtle text-ink-primary placeholder:text-ink-muted focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all resize-none"
-                placeholder="Tell me about the role or opportunity..."
-              />
-            </div>
-
+          <div className="text-center pt-2">
             <button
               type="submit"
               disabled={status === "sending"}
-              className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-accent text-white rounded-md font-medium hover:bg-accent-glow transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-primary disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {status === "sending" ? (
-                "Sending..."
+                "Sending…"
               ) : status === "success" ? (
-                <>
-                  <CheckCircle2 size={16} /> Sent! I&apos;ll reply soon.
-                </>
+                <><CheckCircle2 size={16} /> Sent!</>
               ) : (
-                <>
-                  Send message <Send size={16} />
-                </>
+                <>Get In Touch <Send size={15} /></>
               )}
             </button>
-
-            {status === "error" && (
-              <p className="text-sm text-red-400">
-                Something went wrong. Email me directly at {personal.email}.
-              </p>
-            )}
           </div>
+
+          {status === "error" && (
+            <p className="text-white/80 text-sm text-center">
+              Something went wrong. Email me at{" "}
+              <a href={`mailto:${personal.email}`} className="underline">
+                {personal.email}
+              </a>
+            </p>
+          )}
         </motion.form>
       </div>
     </section>
