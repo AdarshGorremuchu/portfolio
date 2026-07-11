@@ -1,48 +1,48 @@
 export const personal = {
   name: "Adarsh Gorremuchu",
-  title: "AI/ML Engineer",
+  title: "AI/ML Engineer & Data Scientist",
   location: "Tysons, VA",
-  email: "adarshg15102000@gmail.com",
+  email: "gorremuchuadarsh@gmail.com",
   phone: "(703) 627-0235",
   linkedin: "https://linkedin.com/in/adarsh-gorremuchu",
-  github: "https://github.com/AdarshGorremuchu", // ← update with your GitHub handle
+  github: "https://github.com/AdarshGorremuchu",
   tagline:
-    "Building production AI systems — autonomous agents, RAG pipelines, and ML infrastructure that ships.",
+    "Building production AI and responsible ML: autonomous agents, RAG pipelines, and fair, governed models that ship.",
   summary:
-    "I'm an AI/ML Engineer focused on shipping production-grade LLM systems. I architect autonomous agent workflows, build RAG pipelines with vector databases, and deploy scalable ML infrastructure on AWS and Azure. My work spans the full stack — from designing data pipelines and feature engineering to embedding agents into enterprise workflows. I care about systems that are reliable, observable, and actually used.",
+    "I'm an AI/ML Engineer and Data Scientist who ships production-grade AI while keeping it fair, governed, and observable. I architect autonomous agent workflows and RAG systems with vector databases, and I bring a data-scientist's rigor (statistical modeling, hypothesis testing, disparate-impact analysis, and responsible-AI governance) to every model I put into production. My work spans the full stack, from PySpark pipelines on Azure Databricks and feature engineering to translating results into clear Power BI narratives for technical and non-technical stakeholders alike.",
 };
 
 export const stats = [
-  { value: "70-85%", label: "Manual effort reduced via AI agents" },
+  { value: "4+", label: "Years across ML, analytics & data engineering" },
+  { value: "70-85%", label: "Manual effort cut via AI agents" },
   { value: "40%", label: "RAG retrieval relevance gain" },
-  { value: "45%", label: "Throughput acceleration" },
-  { value: "20+", label: "Multi-cloud projects delivered" },
+  { value: "35%", label: "Faster analysis via ML pipelines" },
 ];
 
 export const experiences = [
   {
-    role: "AI/ML Engineer",
+    role: "AI/ML Engineer & Data Scientist",
     company: "Ampcus Inc",
     location: "Chantilly, VA",
-    period: "Jun 2025 — Present",
+    period: "Jun 2025 - Present",
     description:
-      "Building autonomous agent workflows and production RAG systems for enterprise Microsoft ecosystems.",
+      "Building autonomous agent workflows and production RAG systems, with responsible-AI governance and statistical rigor across the model lifecycle.",
     achievements: [
-      "Architected autonomous agent workflows using LLMs, tool-use, and decision logic — cutting manual effort by 70-85% across internal operations.",
+      "Architected autonomous agent workflows using LLMs, tool-use, and decision logic, cutting manual effort by 70-85% across internal operations.",
       "Engineered production RAG systems with embeddings and vector databases (OpenSearch, Pinecone), boosting retrieval relevance by 40%.",
-      "Embedded agents into Microsoft ecosystems via Copilot Studio, Semantic Kernel, Azure AI, and Azure OpenAI.",
-      "Devised multi-agent orchestration for classification, planning, retrieval, and structured outputs — accelerated throughput by 45%.",
-      "Strengthened reliability with evaluation checks, access controls, and trace logging — lowered rework by 30% in compliance flows.",
+      "Applied disparate-impact analysis and statistical bias assessment to review model outputs for fairness risk; partnered with compliance and legal on risk-mitigation decisions.",
+      "Designed and validated predictive ML models end-to-end: feature engineering, hypothesis testing, and lifecycle documentation aligned with responsible-AI governance.",
+      "Ran descriptive, predictive, and prescriptive analyses on large datasets with Python and PySpark on Azure Databricks; built Power BI dashboards to communicate results to technical and non-technical leadership.",
       "Deployed serverless components on AWS Lambda, SQS, and Step Functions; packaged with Docker; provisioned via Terraform.",
     ],
     stack: [
       "LLMs",
       "RAG",
-      "LangChain",
-      "Semantic Kernel",
-      "Azure OpenAI",
+      "PySpark",
+      "Azure Databricks",
+      "Responsible AI",
+      "Power BI",
       "AWS Lambda",
-      "Docker",
       "Terraform",
     ],
   },
@@ -50,14 +50,14 @@ export const experiences = [
     role: "Cloud Data Engineer & ML Developer",
     company: "Community Informatics Lab (GMU)",
     location: "Fairfax, VA",
-    period: "May 2024 — Nov 2024",
+    period: "May 2024 - Nov 2024",
     description:
       "Built LLM-assisted analytics and multi-cloud data architecture supporting 20+ research projects.",
     achievements: [
-      "Developed LLM-assisted analytics for summarization, classification, and context extraction using RAG and prompt strategies — shortened analysis turnaround by 35%.",
+      "Developed LLM-assisted analytics for summarization, classification, and context extraction using RAG and prompt strategies, shortening analysis turnaround by 35%.",
       "Designed multi-cloud architecture with Snowflake, BigQuery, and NoSQL supporting 20+ projects with standardized schemas.",
-      "Trained and evaluated ML pipelines with TensorFlow, PyTorch, clustering, and statistical methods — elevated forecasting quality by 35%.",
-      "Streamlined orchestration using Airflow, Spark, and Databricks — accelerated pipeline runtimes by 55% while sustaining 99.9% reliability.",
+      "Trained and evaluated ML pipelines with TensorFlow, PyTorch, clustering, and statistical methods, elevating forecasting quality by 35%.",
+      "Streamlined orchestration using Airflow, Spark, and Databricks, accelerating pipeline runtimes by 55% while sustaining 99.9% reliability.",
     ],
     stack: [
       "Python",
@@ -74,13 +74,13 @@ export const experiences = [
     role: "Data Engineer & BI Developer",
     company: "TriSX Global India Pvt Ltd",
     location: "Hyderabad, India",
-    period: "Dec 2020 — Dec 2022",
+    period: "Dec 2020 - Dec 2022",
     description:
       "Designed ETL pipelines, predictive models, and executive BI dashboards for enterprise reporting.",
     achievements: [
-      "Designed ETL pipelines and analytics data models using Databricks, Spark, and warehouses (Redshift, Snowflake, BigQuery) — decreased reporting latency by 55%.",
-      "Applied predictive modeling and KPI forecasting using Python and TensorFlow — increased planning accuracy by 20%.",
-      "Produced executive dashboards in Power BI and standardized KPI definitions — increased stakeholder adoption by 30%.",
+      "Designed ETL pipelines and analytics data models using Databricks, Spark, and warehouses (Redshift, Snowflake, BigQuery), decreasing reporting latency by 55%.",
+      "Applied predictive modeling and KPI forecasting using Python and TensorFlow, increasing planning accuracy by 20%.",
+      "Produced executive dashboards in Power BI and standardized KPI definitions, increasing stakeholder adoption by 30%.",
     ],
     stack: [
       "Databricks",
@@ -95,6 +95,26 @@ export const experiences = [
 ];
 
 export const projects = [
+  {
+    title: "Bias & Fairness Assessment: AI Model Governance",
+    blurb:
+      "Responsible-AI review pipeline evaluating model outputs for fairness risk under governance frameworks.",
+    description:
+      "Built a fairness-review pipeline that evaluates AI/ML model inputs, assumptions, and outcomes for potential disparate impact. Applied statistical bias-assessment techniques on Azure Databricks with PySpark, documented findings in technical reports, and collaborated with compliance stakeholders to support risk-mitigation and corrective-action planning.",
+    stack: [
+      "Python",
+      "PySpark",
+      "Azure Databricks",
+      "Disparate Impact Analysis",
+      "Responsible AI",
+    ],
+    highlights: [
+      "Statistical bias assessment against responsible-AI governance frameworks",
+      "Disparate-impact analysis on model outputs and business policies",
+      "Documented reviews supporting compliance risk-mitigation decisions",
+    ],
+    accent: "gold",
+  },
   {
     title: "Serverless RAG Architecture & Vector Search",
     blurb:
@@ -114,7 +134,7 @@ export const projects = [
       "IaC-provisioned via Terraform across environments",
       "Containerized with Docker for portable deployment",
     ],
-    accent: "indigo",
+    accent: "blue",
   },
   {
     title: "Campaign Outcome Prediction & Ranking Model",
@@ -128,14 +148,14 @@ export const projects = [
       "Powered decision-making for cross-functional team of 10+",
       "Feature engineering optimized for forecast accuracy",
     ],
-    accent: "cyan",
+    accent: "gold",
   },
   {
     title: "EPCIS Supply Chain Inbound Tracking",
     blurb:
       "EPCIS-compliant tracking module standardizing supplier transactions with real-time visibility.",
     description:
-      "Built an EPCIS-compliant inbound tracking module enabling organization admins to manage supplier transactions. Implemented 'Add Order' capabilities, real-time shipment visibility, and standardized supplier inbound events to comply with global traceability standards — reducing manual tracking errors by 40%.",
+      "Built an EPCIS-compliant inbound tracking module enabling organization admins to manage supplier transactions. Implemented 'Add Order' capabilities, real-time shipment visibility, and standardized supplier inbound events to comply with global traceability standards, reducing manual tracking errors by 40%.",
     stack: [
       "EPCIS",
       "Cloud Architecture",
@@ -147,7 +167,7 @@ export const projects = [
       "Compliant with global EPCIS traceability standards",
       "Real-time shipment visibility for admins",
     ],
-    accent: "purple",
+    accent: "blue",
   },
 ];
 
@@ -159,7 +179,6 @@ export const skills = [
       "RAG",
       "LangChain",
       "Semantic Kernel",
-      "Hugging Face",
       "PyTorch",
       "TensorFlow",
       "NLP",
@@ -168,46 +187,50 @@ export const skills = [
     ],
   },
   {
-    category: "Microsoft",
+    category: "Data Science & Statistics",
     items: [
-      "Microsoft Copilot Studio",
-      "Azure AI Services",
-      "Azure OpenAI",
-      "Azure Functions",
+      "Predictive Modeling",
+      "Regression",
+      "Clustering",
+      "Classification",
+      "Hypothesis Testing",
+      "EDA",
+      "Feature Engineering",
+      "Model Lifecycle",
     ],
   },
   {
-    category: "Cloud & DevOps",
+    category: "Responsible AI & Compliance",
     items: [
-      "AWS Lambda",
-      "SQS",
-      "Step Functions",
-      "S3",
-      "Docker",
-      "Terraform",
-      "CloudWatch",
+      "Disparate Impact Analysis",
+      "Bias Assessment",
+      "Responsible AI",
+      "Model Governance",
+      "Fair Lending Frameworks",
     ],
   },
   {
-    category: "Data",
+    category: "Data Engineering & Cloud",
     items: [
-      "Databricks",
-      "Spark",
+      "Azure Databricks",
+      "PySpark",
+      "SparkSQL",
       "Airflow",
       "Snowflake",
-      "Redshift",
       "BigQuery",
-      "OpenSearch",
-      "Pinecone",
+      "Redshift",
+      "AWS Lambda",
+      "Docker",
+      "Terraform",
     ],
   },
   {
     category: "Languages",
-    items: ["Python", "SQL", "JavaScript", "Bash"],
+    items: ["Python", "SQL", "PySpark", "R", "SAS/Stat", "Bash"],
   },
   {
-    category: "BI / Analytics",
-    items: ["Power BI", "DAX", "Excel"],
+    category: "Visualization & BI",
+    items: ["Power BI", "Tableau", "Data Storytelling", "DAX", "Dashboards"],
   },
 ];
 
@@ -215,15 +238,8 @@ export const education = [
   {
     school: "George Mason University",
     degree: "M.S. Data Analytics Engineering",
-    period: "Jan 2023 — Dec 2024",
+    period: "Jan 2023 - Dec 2024",
     location: "Fairfax, VA",
     focus: "Machine Learning, Data Engineering, Cloud Computing, Statistics",
-  },
-  {
-    school: "CVR College of Engineering",
-    degree: "B.Tech, Electronics & Communications Engineering",
-    period: "Aug 2018 — Jun 2022",
-    location: "Hyderabad, India",
-    focus: "Software Systems, Data Structures, Probability & Statistics",
   },
 ];

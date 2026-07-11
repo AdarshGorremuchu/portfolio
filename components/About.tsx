@@ -1,88 +1,135 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Linkedin, Mail, Download } from "lucide-react";
-import { personal, skills, education } from "@/lib/data";
+import Image from "next/image";
+import { Download } from "lucide-react";
+import { personal, stats, education, skills } from "@/lib/data";
 
 export default function About() {
   return (
-    <section id="about" className="section relative bg-white">
-      <div className="grid md:grid-cols-2 gap-16 items-start">
-        {/* Left — bio */}
+    <section id="about" className="section relative">
+      <span className="roman-numeral" style={{ top: "3rem", left: "1rem" }}>
+        I
+      </span>
+
+      <div className="relative z-10">
         <motion.div
-          initial={{ opacity: 0, x: -24 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6 }}
         >
-          <p className="section-label">Who I am</p>
-          <h2 className="section-heading">About Myself</h2>
-
-          <p className="text-ink-secondary leading-relaxed mb-6">
-            {personal.summary}
-          </p>
-
-          {/* Education */}
-          <div className="space-y-3 mb-8">
-            {education.map((ed) => (
-              <div key={ed.school} className="flex gap-3">
-                <div className="w-1 rounded-full bg-accent shrink-0 mt-1" />
-                <div>
-                  <p className="font-semibold text-ink-primary text-sm">{ed.school}</p>
-                  <p className="text-xs text-ink-muted">{ed.degree} · {ed.period}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Socials + resume */}
-          <p className="text-xs font-bold uppercase tracking-widest text-accent mb-3">
-            Let&apos;s Connect
-          </p>
-          <div className="flex items-center gap-3 mb-6">
-            <a
-              href={personal.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-10 h-10 flex items-center justify-center rounded-full border-2 border-ink-primary text-ink-primary hover:border-accent hover:text-accent transition-all"
-            >
-              <Linkedin size={18} />
-            </a>
-            <a
-              href={`mailto:${personal.email}`}
-              className="w-10 h-10 flex items-center justify-center rounded-full border-2 border-ink-primary text-ink-primary hover:border-accent hover:text-accent transition-all"
-            >
-              <Mail size={18} />
-            </a>
-          </div>
-          <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="btn-outline text-sm inline-flex">
-            <Download size={15} /> Get my resume
-          </a>
+          <div className="section-label">About</div>
+          <h2 className="section-heading">
+            A data scientist&apos;s rigor,
+            <br />
+            an <em>engineer&apos;s</em> ship-it instinct.
+          </h2>
         </motion.div>
 
-        {/* Right — skills accordion */}
-        <motion.div
-          initial={{ opacity: 0, x: 24 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-        >
-          <p className="section-label">What I do</p>
-          <h2 className="section-heading">Skills</h2>
+        <div className="grid md:grid-cols-5 gap-12 mb-20 md:items-stretch">
+          {/* Left: clear gold-framed portrait */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="md:col-span-2"
+          >
+            <div className="rounded-2xl p-[3px] bg-gradient-to-br from-accent-glow via-accent to-accent-deep shadow-[0_12px_40px_rgba(201,162,74,0.18)]">
+              <Image
+                src="/headshot.png"
+                alt="Adarsh Gorremuchu, AI/ML Engineer & Data Scientist"
+                width={480}
+                height={600}
+                priority
+                className="rounded-[calc(1rem-3px)] w-full aspect-[4/5] object-cover object-top"
+              />
+            </div>
+          </motion.div>
 
-          <div className="divide-y divide-border-subtle">
+          {/* Right: bio + education + resume, filling the column height */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="md:col-span-3 flex flex-col"
+          >
+            <p className="text-lg leading-relaxed text-ink-secondary mb-6">
+              {personal.summary}
+            </p>
+
+            {education.map((ed) => (
+              <div key={ed.school} className="gold-card p-5 mb-6">
+                <div className="text-xs font-mono text-accent mb-2 tracking-wider">
+                  {ed.period}
+                </div>
+                <div className="font-medium text-ink-primary mb-1">
+                  {ed.school}
+                </div>
+                <div className="text-sm text-ink-secondary mb-2">{ed.degree}</div>
+                <div className="text-xs text-ink-muted">{ed.focus}</div>
+              </div>
+            ))}
+
+            <a
+              href="/resume.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-ghost text-sm inline-flex self-start mt-auto"
+            >
+              <Download size={15} /> Get my resume
+            </a>
+          </motion.div>
+        </div>
+
+        {/* Stats */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-20"
+        >
+          {stats.map((s) => (
+            <div key={s.label} className="gold-card p-5">
+              <div className="font-display text-3xl md:text-4xl gold-text mb-2">
+                {s.value}
+              </div>
+              <div className="text-xs text-ink-muted leading-snug">{s.label}</div>
+            </div>
+          ))}
+        </motion.div>
+
+        {/* Skills */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6 }}
+        >
+          <div className="section-label">Toolkit</div>
+          <h3 className="font-display text-2xl md:text-3xl text-ink-primary mb-8">
+            What I work with
+          </h3>
+          <div className="grid md:grid-cols-2 gap-x-12">
             {skills.map((group) => (
-              <details key={group.category} className="group py-4">
-                <summary className="flex items-center justify-between cursor-pointer list-none font-semibold text-ink-primary hover:text-accent transition-colors select-none">
-                  <span>{group.category}</span>
-                  <span className="text-accent text-lg transition-transform group-open:rotate-90">›</span>
-                </summary>
-                <div className="flex flex-wrap gap-2 mt-3 pb-1">
+              <div
+                key={group.category}
+                className="py-5 border-b border-border-subtle"
+              >
+                <p className="font-mono text-xs uppercase tracking-widest text-accent mb-3">
+                  {group.category}
+                </p>
+                <div className="flex flex-wrap gap-2">
                   {group.items.map((item) => (
-                    <span key={item} className="tag">{item}</span>
+                    <span key={item} className="tag">
+                      {item}
+                    </span>
                   ))}
                 </div>
-              </details>
+              </div>
             ))}
           </div>
         </motion.div>

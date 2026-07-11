@@ -3,7 +3,7 @@ import { Mail, Linkedin } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="bg-white border-t border-border-subtle py-8 px-6">
+    <footer className="bg-bg border-t border-border-subtle py-8 px-6">
       <div className="max-w-[1100px] mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
         <p className="text-sm text-ink-muted">
           © {new Date().getFullYear()} {personal.name}. All rights reserved.

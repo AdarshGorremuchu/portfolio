@@ -5,8 +5,9 @@ import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const links = [
-  { href: "#projects", label: "Portfolio" },
   { href: "#about", label: "About" },
+  { href: "#experience", label: "Experience" },
+  { href: "#projects", label: "Work" },
   { href: "#contact", label: "Contact" },
 ];
 
@@ -15,7 +16,7 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
+    const onScroll = () => setScrolled(window.scrollY > 24);
     onScroll();
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
@@ -25,26 +26,26 @@ export default function Navbar() {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "bg-white/95 backdrop-blur-md shadow-sm"
-          : "bg-transparent"
+          ? "backdrop-blur-xl bg-bg/80 border-b border-border-subtle"
+          : "bg-gradient-to-b from-bg via-bg/70 to-transparent"
       }`}
     >
-      <nav className="max-w-[1100px] mx-auto px-6 md:px-8 h-16 flex items-center justify-between">
+      <nav className="max-w-[1160px] mx-auto px-6 md:px-8 h-16 flex items-center justify-between">
         {/* Logo */}
         <a
           href="#hero"
-          className="text-xl font-bold text-accent tracking-tight"
+          className="font-display text-2xl font-bold tracking-tight text-ink-primary"
         >
-          Adarsh.
+          Adarsh<span className="text-accent">.</span>
         </a>
 
         {/* Desktop links */}
-        <ul className="hidden md:flex items-center gap-8">
+        <ul className="hidden md:flex items-center gap-9">
           {links.map((l) => (
             <li key={l.href}>
               <a
                 href={l.href}
-                className="text-sm font-medium text-ink-secondary hover:text-accent transition-colors"
+                className="text-sm font-mono uppercase tracking-widest text-ink-secondary hover:text-accent transition-colors"
               >
                 {l.label}
               </a>
@@ -55,14 +56,14 @@ export default function Navbar() {
               href="/resume.pdf"
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-outline text-sm py-2 px-5"
+              className="btn-ghost text-xs py-2 px-4 uppercase tracking-widest"
             >
               Resume
             </a>
           </li>
         </ul>
 
-        {/* Mobile hamburger */}
+        {/* Mobile toggle */}
         <button
           aria-label="Toggle menu"
           onClick={() => setOpen((v) => !v)}
@@ -75,10 +76,10 @@ export default function Navbar() {
       <AnimatePresence>
         {open && (
           <motion.div
-            initial={{ opacity: 0, y: -8 }}
+            initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            className="md:hidden bg-white/98 backdrop-blur-md border-t border-border-subtle shadow-lg"
+            exit={{ opacity: 0, y: -10 }}
+            className="md:hidden border-t border-border-subtle bg-bg/95 backdrop-blur-xl"
           >
             <ul className="px-6 py-5 flex flex-col gap-4">
               {links.map((l) => (
@@ -86,7 +87,7 @@ export default function Navbar() {
                   <a
                     href={l.href}
                     onClick={() => setOpen(false)}
-                    className="block text-ink-secondary hover:text-accent font-medium transition-colors"
+                    className="block font-mono text-sm uppercase tracking-widest text-ink-secondary hover:text-accent transition-colors"
                   >
                     {l.label}
                   </a>
@@ -97,9 +98,9 @@ export default function Navbar() {
                   href="/resume.pdf"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn-outline text-sm inline-flex"
+                  className="block font-mono text-sm uppercase tracking-widest text-accent"
                 >
-                  Resume
+                  Resume ↗
                 </a>
               </li>
             </ul>

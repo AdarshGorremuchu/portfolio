@@ -1,116 +1,95 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ExternalLink } from "lucide-react";
+import { ArrowUpRight, Sparkles } from "lucide-react";
 import { projects } from "@/lib/data";
 
-// Placeholder project visual — colored card mock to represent a screenshot
-function ProjectVisual({ accent, title }: { accent: string; title: string }) {
-  const palettes: Record<string, { bg: string; bar: string; dot: string }> = {
-    indigo: { bg: "#f0f0ff", bar: "#6c5ce7", dot: "#a29bfe" },
-    cyan:   { bg: "#f0fbff", bar: "#00cec9", dot: "#81ecec" },
-    purple: { bg: "#fdf0ff", bar: "#fd79a8", dot: "#e84393" },
-  };
-  const p = palettes[accent] ?? palettes.indigo;
-
-  return (
-    <div
-      className="rounded-xl overflow-hidden w-full h-full min-h-[220px] flex flex-col"
-      style={{ background: p.bg }}
-    >
-      {/* Fake browser chrome */}
-      <div className="flex items-center gap-1.5 px-4 py-3 bg-white/60 border-b border-black/5">
-        <span className="w-3 h-3 rounded-full bg-red-300" />
-        <span className="w-3 h-3 rounded-full bg-yellow-300" />
-        <span className="w-3 h-3 rounded-full bg-green-300" />
-        <span className="mx-auto text-xs text-gray-400 font-mono truncate">
-          {title.toLowerCase().replace(/\s+/g, "-")}.app
-        </span>
-      </div>
-      {/* Fake content */}
-      <div className="flex-1 p-5 flex flex-col gap-3">
-        <div className="h-4 rounded-full w-2/3" style={{ background: p.bar, opacity: 0.5 }} />
-        <div className="h-3 rounded-full w-full bg-black/8" />
-        <div className="h-3 rounded-full w-5/6 bg-black/8" />
-        <div className="h-3 rounded-full w-4/6 bg-black/8" />
-        <div className="mt-auto flex gap-2">
-          <div className="h-8 rounded-md w-24" style={{ background: p.bar, opacity: 0.7 }} />
-          <div className="h-8 rounded-md w-20 border-2" style={{ borderColor: p.dot, opacity: 0.5 }} />
-        </div>
-      </div>
-    </div>
-  );
-}
+const glowMap: Record<string, string> = {
+  gold: "from-accent/25 to-transparent",
+  blue: "from-accent-blue/30 to-transparent",
+};
 
 export default function Projects() {
   return (
     <section id="projects" className="section relative">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-80px" }}
-        transition={{ duration: 0.6 }}
-        className="text-center mb-16"
-      >
-        <p className="section-label">Featured work</p>
-        <h2 className="section-heading" style={{ marginBottom: 0 }}>
-          Portfolio
-        </h2>
-      </motion.div>
+      <span className="roman-numeral" style={{ top: "3rem", left: "1rem" }}>
+        III
+      </span>
 
-      <div className="space-y-16">
-        {projects.map((p, idx) => {
-          const isEven = idx % 2 === 0;
-          return (
-            <motion.div
+      <div className="relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6 }}
+        >
+          <div className="section-label">Selected Work</div>
+          <h2 className="section-heading">
+            Things I&apos;ve <em>built</em>.
+          </h2>
+        </motion.div>
+
+        <div className="grid md:grid-cols-2 gap-6">
+          {projects.map((p, idx) => (
+            <motion.article
               key={p.title}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.6, delay: idx * 0.08 }}
-              className="white-card grid md:grid-cols-2 gap-0 overflow-hidden"
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.6, delay: idx * 0.1 }}
+              className={`gold-card group relative p-7 overflow-hidden ${
+                idx === 0 ? "md:col-span-2" : ""
+              }`}
             >
-              {/* Visual — left on even, right on odd */}
-              <div className={`p-6 flex items-center justify-center bg-bg-soft ${isEven ? "md:order-1" : "md:order-2"}`}>
-                <div className="w-full">
-                  <ProjectVisual accent={p.accent} title={p.title} />
-                </div>
-              </div>
+              {/* Accent glow */}
+              <div
+                className={`absolute top-0 right-0 w-72 h-72 bg-gradient-to-bl ${
+                  glowMap[p.accent] || glowMap.gold
+                } rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none`}
+              />
 
-              {/* Text */}
-              <div className={`p-8 md:p-10 flex flex-col justify-center ${isEven ? "md:order-2" : "md:order-1"}`}>
-                <p className="text-xs font-bold uppercase tracking-widest text-accent mb-2">
-                  Featured Project
-                </p>
-                <h3 className="text-2xl font-bold text-ink-primary mb-3 leading-snug">
+              <div className="relative">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex items-center gap-2 text-accent">
+                    <Sparkles size={16} />
+                    <span className="font-mono text-xs uppercase tracking-widest">
+                      Featured Project
+                    </span>
+                  </div>
+                  <ArrowUpRight
+                    size={20}
+                    className="text-ink-muted group-hover:text-accent group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-all"
+                  />
+                </div>
+
+                <h3 className="font-display text-2xl md:text-3xl text-ink-primary mb-3 leading-tight">
                   {p.title}
                 </h3>
-                <p className="text-ink-secondary leading-relaxed mb-5 text-sm">
+
+                <p className="text-ink-secondary mb-5 leading-relaxed">
                   {p.description}
                 </p>
 
-                <ul className="space-y-1.5 mb-6">
+                <ul className="space-y-2 mb-5">
                   {p.highlights.map((h, i) => (
                     <li key={i} className="flex gap-2 text-sm text-ink-secondary">
-                      <span className="text-accent mt-0.5 shrink-0">→</span>
+                      <span className="text-accent mt-1">→</span>
                       <span>{h}</span>
                     </li>
                   ))}
                 </ul>
 
-                <div className="flex flex-wrap gap-2 mb-6">
+                <div className="flex flex-wrap gap-2">
                   {p.stack.map((tech) => (
-                    <span key={tech} className="tag">{tech}</span>
+                    <span key={tech} className="tag">
+                      {tech}
+                    </span>
                   ))}
                 </div>
-
-                <a href="#contact" className="btn-outline self-start text-sm">
-                  See Project <ExternalLink size={14} />
-                </a>
               </div>
-            </motion.div>
-          );
-        })}
+            </motion.article>
+          ))}
+        </div>
       </div>
     </section>
   );
