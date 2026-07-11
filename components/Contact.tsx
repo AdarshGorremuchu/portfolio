@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Mail, Linkedin, Phone, Send, CheckCircle2, MapPin } from "lucide-react";
+import { Mail, Linkedin, Send, CheckCircle2, MapPin } from "lucide-react";
 import { personal } from "@/lib/data";
 
 export default function Contact() {
@@ -72,7 +72,6 @@ export default function Contact() {
               {[
                 { icon: <Mail size={18} />, label: "Email", value: personal.email, href: `mailto:${personal.email}` },
                 { icon: <Linkedin size={18} />, label: "LinkedIn", value: "/adarsh-gorremuchu", href: personal.linkedin },
-                { icon: <Phone size={18} />, label: "Phone", value: personal.phone, href: `tel:${personal.phone.replace(/\D/g, "")}` },
                 { icon: <MapPin size={18} />, label: "Location", value: personal.location, href: undefined },
               ].map((row) => {
                 const Inner = (

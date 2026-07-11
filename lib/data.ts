@@ -3,7 +3,6 @@ export const personal = {
   title: "AI/ML Engineer & Data Scientist",
   location: "Tysons, VA",
   email: "gorremuchuadarsh@gmail.com",
-  phone: "(703) 627-0235",
   linkedin: "https://linkedin.com/in/adarsh-gorremuchu",
   github: "https://github.com/AdarshGorremuchu",
   tagline:
