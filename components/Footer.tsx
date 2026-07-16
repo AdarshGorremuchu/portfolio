@@ -14,7 +14,7 @@ export default function Footer() {
             className="text-ink-muted hover:text-accent transition-colors"
             aria-label="Email"
           >
-            <Mail size={18} />
+            <Mail size={18} aria-hidden="true" />
           </a>
           <a
             href={personal.linkedin}
@@ -23,7 +23,7 @@ export default function Footer() {
             className="text-ink-muted hover:text-accent transition-colors"
             aria-label="LinkedIn"
           >
-            <Linkedin size={18} />
+            <Linkedin size={18} aria-hidden="true" />
           </a>
         </div>
       </div>

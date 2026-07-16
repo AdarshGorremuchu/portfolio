@@ -70,9 +70,9 @@ export default function Contact() {
 
             <div className="space-y-3">
               {[
-                { icon: <Mail size={18} />, label: "Email", value: personal.email, href: `mailto:${personal.email}` },
-                { icon: <Linkedin size={18} />, label: "LinkedIn", value: "/adarsh-gorremuchu", href: personal.linkedin },
-                { icon: <MapPin size={18} />, label: "Location", value: personal.location, href: undefined },
+                { icon: <Mail size={18} aria-hidden="true" />, label: "Email", value: personal.email, href: `mailto:${personal.email}` },
+                { icon: <Linkedin size={18} aria-hidden="true" />, label: "LinkedIn", value: "/adarsh-gorremuchu", href: personal.linkedin },
+                { icon: <MapPin size={18} aria-hidden="true" />, label: "Location", value: personal.location, href: undefined },
               ].map((row) => {
                 const Inner = (
                   <>
@@ -117,31 +117,32 @@ export default function Contact() {
             <div className="space-y-5">
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-mono text-ink-muted uppercase tracking-wider mb-2">
+                  <label htmlFor="contact-name" className="block text-xs font-mono text-ink-muted uppercase tracking-wider mb-2">
                     Name
                   </label>
-                  <input type="text" name="name" required className={inputCls} placeholder="Your name" />
+                  <input id="contact-name" type="text" name="name" required className={inputCls} placeholder="Your name" />
                 </div>
                 <div>
-                  <label className="block text-xs font-mono text-ink-muted uppercase tracking-wider mb-2">
+                  <label htmlFor="contact-email" className="block text-xs font-mono text-ink-muted uppercase tracking-wider mb-2">
                     Email
                   </label>
-                  <input type="email" name="email" required className={inputCls} placeholder="you@company.com" />
+                  <input id="contact-email" type="email" name="email" required className={inputCls} placeholder="you@company.com" />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-mono text-ink-muted uppercase tracking-wider mb-2">
+                <label htmlFor="contact-company" className="block text-xs font-mono text-ink-muted uppercase tracking-wider mb-2">
                   Company / Role
                 </label>
-                <input type="text" name="company" className={inputCls} placeholder="Optional" />
+                <input id="contact-company" type="text" name="company" className={inputCls} placeholder="Optional" />
               </div>
 
               <div>
-                <label className="block text-xs font-mono text-ink-muted uppercase tracking-wider mb-2">
+                <label htmlFor="contact-message" className="block text-xs font-mono text-ink-muted uppercase tracking-wider mb-2">
                   Message
                 </label>
                 <textarea
+                  id="contact-message"
                   name="message"
                   required
                   rows={5}
@@ -159,17 +160,17 @@ export default function Contact() {
                   "Sending..."
                 ) : status === "success" ? (
                   <>
-                    <CheckCircle2 size={16} /> Sent! I&apos;ll reply soon.
+                    <CheckCircle2 size={16} aria-hidden="true" /> Sent! I&apos;ll reply soon.
                   </>
                 ) : (
                   <>
-                    Send message <Send size={16} />
+                    Send message <Send size={16} aria-hidden="true" />
                   </>
                 )}
               </button>
 
               {status === "error" && (
-                <p className="text-sm text-red-400">
+                <p role="alert" className="text-sm text-red-400">
                   Something went wrong. Email me directly at {personal.email}.
                 </p>
               )}

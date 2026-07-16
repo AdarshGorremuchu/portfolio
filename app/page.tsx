@@ -8,7 +8,10 @@ import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
-    <main className="relative">
+    <main id="main" className="relative">
+      <a href="#hero" className="skip-link">
+        Skip to content
+      </a>
       <Navbar />
       <Hero />
       <About />

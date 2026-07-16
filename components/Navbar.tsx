@@ -45,7 +45,7 @@ export default function Navbar() {
             <li key={l.href}>
               <a
                 href={l.href}
-                className="text-sm font-mono uppercase tracking-widest text-ink-secondary hover:text-accent transition-colors"
+                className="nav-link text-sm font-mono uppercase tracking-widest text-ink-secondary hover:text-accent transition-colors"
               >
                 {l.label}
               </a>
@@ -69,7 +69,11 @@ export default function Navbar() {
           onClick={() => setOpen((v) => !v)}
           className="md:hidden text-ink-primary"
         >
-          {open ? <X size={22} /> : <Menu size={22} />}
+          {open ? (
+            <X size={22} aria-hidden="true" />
+          ) : (
+            <Menu size={22} aria-hidden="true" />
+          )}
         </button>
       </nav>
 

@@ -140,6 +140,10 @@ body {
   box-shadow: 0 8px 30px rgba(201, 162, 74, 0.35);
   transform: translateY(-1px);
 }
+.btn-gold:active {
+  transform: translateY(0) scale(0.97);
+  box-shadow: 0 2px 12px rgba(201, 162, 74, 0.25);
+}
 .btn-ghost {
   display: inline-flex;
   align-items: center;
@@ -158,6 +162,9 @@ body {
 .btn-ghost:hover {
   background: rgba(201, 162, 74, 0.08);
   border-color: rgba(201, 162, 74, 0.7);
+}
+.btn-ghost:active {
+  transform: scale(0.97);
 }
 
 /* Card with gold border-glow on hover */
@@ -192,4 +199,62 @@ body {
   opacity: 0.02;
   z-index: 999;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+}
+
+/* Visible keyboard-focus ring (gold). Only shows for keyboard users. */
+:where(a, button, input, textarea, select, [tabindex]):focus-visible {
+  outline: 2px solid #e6c877;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Skip-to-content link: hidden until focused, then pinned top-left. */
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -3rem;
+  z-index: 1000;
+  padding: 0.6rem 1rem;
+  background: #e6c877;
+  color: #1a1204;
+  font-weight: 600;
+  font-size: 0.85rem;
+  border-radius: 4px;
+  transition: top 0.2s ease;
+}
+.skip-link:focus {
+  top: 1rem;
+}
+
+/* Nav-link underline sweep on hover/focus (also a non-color focus cue). */
+.nav-link {
+  position: relative;
+}
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 100%;
+  height: 1px;
+  background: #c9a24a;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s ease;
+}
+.nav-link:hover::after,
+.nav-link:focus-visible::after {
+  transform: scaleX(1);
+}
+
+/* Honor reduced-motion for CSS transitions/animations site-wide. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }

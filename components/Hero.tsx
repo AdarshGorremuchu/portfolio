@@ -22,6 +22,9 @@ function ParticlePortrait() {
     if (!ctx) return;
     const c = ctx;
     const el = canvas;
+    const reduce = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
 
     let animId = 0;
     let W = 0;
@@ -189,6 +192,34 @@ function ParticlePortrait() {
       o.drawImage(img, dx, dy, dw, dh);
     };
 
+    // Reduced-motion: render the portrait once at rest (particles on target),
+    // no assembly animation, no pointer interaction.
+    if (reduce) {
+      const drawStatic = () => {
+        buildFromSource(activeDraw);
+        c.clearRect(0, 0, W, H);
+        c.globalCompositeOperation = "lighter";
+        for (const p of particles) {
+          c.beginPath();
+          c.arc(p.tx, p.ty, p.size, 0, Math.PI * 2);
+          c.fillStyle = GOLDS[(p.tx | 0) % GOLDS.length];
+          c.globalAlpha = p.alpha;
+          c.fill();
+        }
+        c.globalAlpha = 1;
+        c.globalCompositeOperation = "source-over";
+      };
+      img.onload = () => {
+        activeDraw = drawPhoto;
+        drawStatic();
+      };
+      img.src = "/headshot.png";
+      drawStatic();
+      const roStatic = new ResizeObserver(drawStatic);
+      roStatic.observe(el);
+      return () => roStatic.disconnect();
+    }
+
     img.onload = () => {
       activeDraw = drawPhoto;
       buildFromSource(activeDraw);
@@ -255,14 +286,15 @@ function ParticlePortrait() {
     };
   }, []);
 
-  return <canvas ref={canvasRef} id="particle-canvas" />;
+  return <canvas ref={canvasRef} id="particle-canvas" aria-hidden="true" />;
 }
 
 export default function Hero() {
   return (
     <section
       id="hero"
-      className="relative min-h-screen flex items-center overflow-hidden bg-bg"
+      tabIndex={-1}
+      className="relative min-h-screen flex items-center overflow-hidden bg-bg outline-none"
     >
       {/* Radial gold glow behind portrait */}
       <div
@@ -323,7 +355,7 @@ export default function Hero() {
             className="flex flex-wrap items-center gap-4 mb-12"
           >
             <a href="#projects" className="btn-gold">
-              See the work <ArrowRight size={16} />
+              See the work <ArrowRight size={16} aria-hidden="true" />
             </a>
             <a href="#contact" className="btn-ghost">
               Get in touch
@@ -337,7 +369,7 @@ export default function Hero() {
             className="flex items-center gap-6"
           >
             <span className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-ink-muted">
-              <MapPin size={13} className="text-accent" />
+              <MapPin size={13} className="text-accent" aria-hidden="true" />
               {personal.location}
             </span>
             <div className="flex items-center gap-3">
@@ -348,14 +380,14 @@ export default function Hero() {
                 aria-label="LinkedIn"
                 className="w-10 h-10 flex items-center justify-center rounded-full border border-border-strong text-ink-secondary hover:text-accent hover:border-accent/60 transition-all"
               >
-                <Linkedin size={17} />
+                <Linkedin size={17} aria-hidden="true" />
               </a>
               <a
                 href={`mailto:${personal.email}`}
                 aria-label="Email"
                 className="w-10 h-10 flex items-center justify-center rounded-full border border-border-strong text-ink-secondary hover:text-accent hover:border-accent/60 transition-all"
               >
-                <Mail size={17} />
+                <Mail size={17} aria-hidden="true" />
               </a>
             </div>
           </motion.div>

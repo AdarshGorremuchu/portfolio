@@ -22,7 +22,7 @@ module.exports = {
         ink: {
           primary: "#f5f2e8", // warm ivory
           secondary: "#a8b2c8", // cool blue-gray
-          muted: "#67728c", // muted slate
+          muted: "#828ca3", // muted slate (WCAG AA on navy)
         },
         border: {
           subtle: "rgba(201,162,74,0.12)",

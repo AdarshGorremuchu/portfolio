@@ -79,7 +79,7 @@ export default function About() {
               rel="noopener noreferrer"
               className="btn-ghost text-sm inline-flex self-start mt-auto"
             >
-              <Download size={15} /> Get my resume
+              <Download size={15} aria-hidden="true" /> Get my resume
             </a>
           </motion.div>
         </div>
