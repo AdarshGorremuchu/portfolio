@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Mail, Linkedin, Send, CheckCircle2, MapPin } from "lucide-react";
+import { Mail, Linkedin, Github, Send, CheckCircle2, MapPin } from "lucide-react";
 import { personal } from "@/lib/data";
+import ParallaxNumeral from "@/components/ParallaxNumeral";
+import AuroraBackground from "@/components/AuroraBackground";
 
 export default function Contact() {
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">(
@@ -36,11 +38,10 @@ export default function Contact() {
   return (
     <section
       id="contact"
-      className="section relative bg-bg-soft/40 border-t border-border-subtle"
+      className="section relative overflow-hidden bg-bg-soft/40 border-t border-border-subtle"
     >
-      <span className="roman-numeral" style={{ top: "3rem", right: "1rem" }}>
-        IV
-      </span>
+      <AuroraBackground />
+      <ParallaxNumeral style={{ top: "3rem", right: "1rem" }}>IV</ParallaxNumeral>
 
       <div className="relative z-10">
         <motion.div
@@ -72,6 +73,7 @@ export default function Contact() {
               {[
                 { icon: <Mail size={18} aria-hidden="true" />, label: "Email", value: personal.email, href: `mailto:${personal.email}` },
                 { icon: <Linkedin size={18} aria-hidden="true" />, label: "LinkedIn", value: "/adarsh-gorremuchu", href: personal.linkedin },
+                { icon: <Github size={18} aria-hidden="true" />, label: "GitHub", value: "/AdarshGorremuchu", href: personal.github },
                 { icon: <MapPin size={18} aria-hidden="true" />, label: "Location", value: personal.location, href: undefined },
               ].map((row) => {
                 const Inner = (

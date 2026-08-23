@@ -4,13 +4,13 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { Download } from "lucide-react";
 import { personal, stats, education, skills } from "@/lib/data";
+import CountUp from "@/components/CountUp";
+import ParallaxNumeral from "@/components/ParallaxNumeral";
 
 export default function About() {
   return (
     <section id="about" className="section relative">
-      <span className="roman-numeral" style={{ top: "3rem", left: "1rem" }}>
-        I
-      </span>
+      <ParallaxNumeral style={{ top: "3rem", left: "1rem" }}>I</ParallaxNumeral>
 
       <div className="relative z-10">
         <motion.div
@@ -94,9 +94,10 @@ export default function About() {
         >
           {stats.map((s) => (
             <div key={s.label} className="gold-card p-5">
-              <div className="font-display text-3xl md:text-4xl gold-text mb-2">
-                {s.value}
-              </div>
+              <CountUp
+                value={s.value}
+                className="block font-display text-3xl md:text-4xl gold-text mb-2"
+              />
               <div className="text-xs text-ink-muted leading-snug">{s.label}</div>
             </div>
           ))}

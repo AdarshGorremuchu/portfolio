@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Briefcase, MapPin } from "lucide-react";
 import { experiences } from "@/lib/data";
+import ParallaxNumeral from "@/components/ParallaxNumeral";
 
 export default function Experience() {
   return (
@@ -10,9 +11,7 @@ export default function Experience() {
       id="experience"
       className="section relative bg-bg-soft/40 border-y border-border-subtle"
     >
-      <span className="roman-numeral" style={{ top: "3rem", right: "1rem" }}>
-        II
-      </span>
+      <ParallaxNumeral style={{ top: "3rem", right: "1rem" }}>II</ParallaxNumeral>
 
       <div className="relative z-10">
         <motion.div

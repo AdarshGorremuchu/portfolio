@@ -1,9 +1,47 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { motion } from "framer-motion";
-import { Linkedin, Mail, ArrowRight, MapPin } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
+import { motion, useReducedMotion } from "framer-motion";
+import { Linkedin, Mail, Github, ArrowRight, MapPin } from "lucide-react";
 import { personal } from "@/lib/data";
+import Magnetic from "@/components/Magnetic";
+
+// Real 3D point-cloud portrait, code-split so its ~heavy three.js payload only
+// loads on capable desktops (see the gating in HeroPortrait below).
+const ParticlePortrait3D = dynamic(
+  () => import("@/components/ParticlePortrait3D"),
+  { ssr: false }
+);
+
+function supportsWebGL() {
+  try {
+    const c = document.createElement("canvas");
+    return !!(
+      window.WebGLRenderingContext &&
+      (c.getContext("webgl") || c.getContext("experimental-webgl"))
+    );
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Chooses the 3D point cloud on capable desktops; otherwise renders the 2D
+ * canvas portrait (which itself handles reduced-motion). Starts as 2D so SSR
+ * and first paint are cheap, then upgrades after mount.
+ */
+function HeroPortrait() {
+  const [use3D, setUse3D] = useState(false);
+  useEffect(() => {
+    const reduce = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+    const small = window.matchMedia("(max-width: 767px)").matches;
+    if (!reduce && !small && supportsWebGL()) setUse3D(true);
+  }, []);
+  return use3D ? <ParticlePortrait3D /> : <ParticlePortrait />;
+}
 
 /**
  * ParticlePortrait: samples an image (or an "AG" monogram fallback) into a
@@ -290,6 +328,18 @@ function ParticlePortrait() {
 }
 
 export default function Hero() {
+  const reduce = useReducedMotion();
+  const wordReveal = {
+    hidden: { opacity: reduce ? 1 : 0, y: reduce ? 0 : 18 },
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as const },
+    },
+  };
+  const line1 = [{ t: "AI" }, { t: "that" }, { t: "earns", gold: true }];
+  const line2 = [{ t: "its" }, { t: "place." }];
+
   return (
     <section
       id="hero"
@@ -312,11 +362,13 @@ export default function Hero() {
       {/* Particle portrait: right half on desktop, faded backdrop on mobile.
           Pushed below the navbar so links stay legible on landing. */}
       <div className="absolute top-24 bottom-0 left-0 right-0 md:left-[46%] z-0 opacity-40 md:opacity-100">
-        <ParticlePortrait />
+        <HeroPortrait />
       </div>
 
-      {/* Content */}
-      <div className="section relative z-10 w-full">
+      {/* Content. pointer-events-none so the transparent wrapper doesn't steal
+          the cursor from the 3D portrait behind it; interactive clusters below
+          re-enable pointer events on themselves. */}
+      <div className="section relative z-10 w-full pointer-events-none">
         <div className="max-w-2xl">
           <motion.p
             initial={{ opacity: 0, y: 16 }}
@@ -328,15 +380,40 @@ export default function Hero() {
           </motion.p>
 
           <motion.h1
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
+            aria-label="AI that earns its place."
+            initial="hidden"
+            animate="show"
+            variants={{
+              hidden: {},
+              show: { transition: { staggerChildren: 0.09, delayChildren: 0.2 } },
+            }}
             className="font-display font-semibold leading-[1.05] text-ink-primary mb-8"
             style={{ fontSize: "clamp(2.6rem, 6vw, 5rem)" }}
           >
-            AI that <em className="italic text-accent">earns</em>
-            <br />
-            its place.
+            <span aria-hidden="true" className="block">
+              {line1.map((w, i) => (
+                <motion.span
+                  key={w.t}
+                  variants={wordReveal}
+                  className={`inline-block ${i > 0 ? "ml-[0.22em]" : ""} ${
+                    w.gold ? "italic text-accent" : ""
+                  }`}
+                >
+                  {w.t}
+                </motion.span>
+              ))}
+            </span>
+            <span aria-hidden="true" className="block">
+              {line2.map((w, i) => (
+                <motion.span
+                  key={w.t}
+                  variants={wordReveal}
+                  className={`inline-block ${i > 0 ? "ml-[0.22em]" : ""}`}
+                >
+                  {w.t}
+                </motion.span>
+              ))}
+            </span>
           </motion.h1>
 
           <motion.p
@@ -352,21 +429,25 @@ export default function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.5 }}
-            className="flex flex-wrap items-center gap-4 mb-12"
+            className="flex flex-wrap items-center gap-4 mb-12 pointer-events-auto"
           >
-            <a href="#projects" className="btn-gold">
-              See the work <ArrowRight size={16} aria-hidden="true" />
-            </a>
-            <a href="#contact" className="btn-ghost">
-              Get in touch
-            </a>
+            <Magnetic>
+              <a href="#projects" className="btn-gold">
+                See the work <ArrowRight size={16} aria-hidden="true" />
+              </a>
+            </Magnetic>
+            <Magnetic>
+              <a href="#contact" className="btn-ghost">
+                Get in touch
+              </a>
+            </Magnetic>
           </motion.div>
 
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.7, delay: 0.7 }}
-            className="flex items-center gap-6"
+            className="flex items-center gap-6 pointer-events-auto"
           >
             <span className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-ink-muted">
               <MapPin size={13} className="text-accent" aria-hidden="true" />
@@ -381,6 +462,15 @@ export default function Hero() {
                 className="w-10 h-10 flex items-center justify-center rounded-full border border-border-strong text-ink-secondary hover:text-accent hover:border-accent/60 transition-all"
               >
                 <Linkedin size={17} aria-hidden="true" />
+              </a>
+              <a
+                href={personal.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="GitHub"
+                className="w-10 h-10 flex items-center justify-center rounded-full border border-border-strong text-ink-secondary hover:text-accent hover:border-accent/60 transition-all"
+              >
+                <Github size={17} aria-hidden="true" />
               </a>
               <a
                 href={`mailto:${personal.email}`}

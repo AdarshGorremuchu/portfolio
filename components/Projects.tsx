@@ -3,6 +3,8 @@
 import { motion } from "framer-motion";
 import { ArrowUpRight, Sparkles } from "lucide-react";
 import { projects } from "@/lib/data";
+import ParallaxNumeral from "@/components/ParallaxNumeral";
+import TiltCard from "@/components/TiltCard";
 
 const glowMap: Record<string, string> = {
   gold: "from-accent/25 to-transparent",
@@ -12,9 +14,7 @@ const glowMap: Record<string, string> = {
 export default function Projects() {
   return (
     <section id="projects" className="section relative">
-      <span className="roman-numeral" style={{ top: "3rem", left: "1rem" }}>
-        III
-      </span>
+      <ParallaxNumeral style={{ top: "3rem", left: "1rem" }}>III</ParallaxNumeral>
 
       <div className="relative z-10">
         <motion.div
@@ -31,15 +31,17 @@ export default function Projects() {
 
         <div className="grid md:grid-cols-2 gap-6">
           {projects.map((p, idx) => (
-            <motion.article
+            <TiltCard
               key={p.title}
+              max={5}
+              className={idx === 0 ? "md:col-span-2" : ""}
+            >
+            <motion.article
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.6, delay: idx * 0.1 }}
-              className={`gold-card group relative p-7 overflow-hidden ${
-                idx === 0 ? "md:col-span-2" : ""
-              }`}
+              className="gold-card group relative p-7 overflow-hidden h-full"
             >
               {/* Accent glow */}
               <div
@@ -88,6 +90,7 @@ export default function Projects() {
                 </div>
               </div>
             </motion.article>
+            </TiltCard>
           ))}
         </div>
       </div>
