@@ -7,9 +7,8 @@ import * as THREE from "three";
 /**
  * Real 3D point-cloud portrait: the headshot is sampled into a THREE.Points
  * cloud where each bright pixel becomes a gold point, pushed forward in Z by
- * its brightness so the face has genuine depth. The cloud gently auto-rotates
- * and leans toward the cursor (orbit-style parallax). Click bursts the points
- * outward; they spring back.
+ * its brightness so the face has genuine depth. The whole cloud leans smoothly
+ * toward the cursor (rotation-only, so it stays cheap and feels controlled).
  *
  * Lazy-loaded (ssr:false) and only mounted on capable desktops via HeroPortrait
  * gating in Hero.tsx.
@@ -25,8 +24,6 @@ const GOLDS: [number, number, number][] = [
 function PointCloud() {
   const ref = useRef<THREE.Points>(null);
   const [geometry, setGeometry] = useState<THREE.BufferGeometry | null>(null);
-  const home = useRef<Float32Array | null>(null);
-  const vel = useRef<Float32Array | null>(null);
   // Window-level pointer (normalized -1..1). R3F's own state.pointer only
   // updates over the canvas, and the hero text overlay covers part of it.
   const ptr = useRef({ x: 0, y: 0 });
@@ -99,75 +96,26 @@ function PointCloud() {
         "color",
         new THREE.Float32BufferAttribute(colors, 3)
       );
-      home.current = posArr.slice();
-      vel.current = new Float32Array(posArr.length);
       setGeometry(geo);
     };
     img.src = "/headshot.png";
   }, []);
 
-  useFrame((state) => {
+  useFrame(() => {
     const pts = ref.current;
     if (!pts) return;
-    const t = state.clock.elapsedTime;
-
-    // Orbit-style parallax: lean toward the cursor + slow idle drift.
-    // Kept deliberately subtle so the face stays readable at cursor extremes.
-    const targetY = ptr.current.x * 0.3 + Math.sin(t * 0.12) * 0.07;
-    const targetX = ptr.current.y * 0.16;
-    pts.rotation.y += (targetY - pts.rotation.y) * 0.06;
-    pts.rotation.x += (targetX - pts.rotation.x) * 0.06;
-
-    // Click-burst spring-back on the point positions.
-    const geo = pts.geometry;
-    const posAttr = geo.getAttribute("position") as THREE.BufferAttribute;
-    const arr = posAttr.array as Float32Array;
-    const h = home.current;
-    const v = vel.current;
-    if (h && v) {
-      let moved = false;
-      for (let i = 0; i < arr.length; i++) {
-        const a = (h[i] - arr[i]) * 0.06;
-        v[i] = (v[i] + a) * 0.86;
-        if (Math.abs(v[i]) > 0.00005) {
-          arr[i] += v[i];
-          moved = true;
-        }
-      }
-      if (moved) posAttr.needsUpdate = true;
-    }
+    // Rotation-only: smoothly lean toward the cursor. No idle auto-rotation and
+    // no per-vertex work, so it feels controlled and stays smooth.
+    const targetY = ptr.current.x * 0.32;
+    const targetX = ptr.current.y * 0.18;
+    pts.rotation.y += (targetY - pts.rotation.y) * 0.045;
+    pts.rotation.x += (targetX - pts.rotation.x) * 0.045;
   });
 
   if (!geometry) return null;
 
   return (
-    <points
-      ref={ref}
-      geometry={geometry}
-      onPointerDown={(e) => {
-        // Burst points near the click outward.
-        const pts = ref.current;
-        if (!pts) return;
-        const geo = pts.geometry;
-        const posAttr = geo.getAttribute("position") as THREE.BufferAttribute;
-        const arr = posAttr.array as Float32Array;
-        const v = vel.current;
-        if (!v) return;
-        const local = pts.worldToLocal(e.point.clone());
-        for (let i = 0; i < arr.length; i += 3) {
-          const dx = arr[i] - local.x;
-          const dy = arr[i + 1] - local.y;
-          const dz = arr[i + 2] - local.z;
-          const d = Math.hypot(dx, dy, dz) || 1;
-          if (d < 1.4) {
-            const f = (1 - d / 1.4) * 0.5;
-            v[i] += (dx / d) * f;
-            v[i + 1] += (dy / d) * f;
-            v[i + 2] += (dz / d) * f;
-          }
-        }
-      }}
-    >
+    <points ref={ref} geometry={geometry}>
       <pointsMaterial
         size={0.022}
         vertexColors
