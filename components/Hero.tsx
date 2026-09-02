@@ -361,7 +361,18 @@ export default function Hero() {
 
       {/* Particle portrait: right half on desktop, faded backdrop on mobile.
           Pushed below the navbar so links stay legible on landing. */}
-      <div className="absolute top-24 bottom-0 left-0 right-0 md:left-[46%] z-0 opacity-40 md:opacity-100">
+      <div
+        className="absolute top-24 bottom-0 left-0 right-0 md:left-[46%] z-0 opacity-40 md:opacity-100"
+        style={{
+          // Feather the left edge so the canvas bounds never read as a hard
+          // rectangle (additive bloom lifts the buffer very slightly) and the
+          // portrait blends into the hero. Single layer: multi-layer
+          // mask-composite silently resolves to `none` here.
+          WebkitMaskImage:
+            "linear-gradient(to right, transparent 0%, black 15%)",
+          maskImage: "linear-gradient(to right, transparent 0%, black 15%)",
+        }}
+      >
         <HeroPortrait />
       </div>
 
