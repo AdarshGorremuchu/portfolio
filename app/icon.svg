@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="14" fill="#131209"/>
+  <rect x="0.5" y="0.5" width="63" height="63" rx="13.5" fill="none" stroke="#c9a24a" stroke-opacity="0.32"/>
+  <text x="32" y="33" text-anchor="middle" dominant-baseline="central"
+        font-family="Poppins, Helvetica, Arial, sans-serif" font-size="30" font-weight="600" fill="#c9a24a">AG</text>
+</svg>

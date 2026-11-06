@@ -1,98 +1,62 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { ArrowUpRight, Sparkles } from "lucide-react";
+import { ArrowUpRightIcon } from "@phosphor-icons/react/dist/ssr";
 import { projects } from "@/lib/data";
-import ParallaxNumeral from "@/components/ParallaxNumeral";
-import TiltCard from "@/components/TiltCard";
-
-const glowMap: Record<string, string> = {
-  gold: "from-accent/25 to-transparent",
-  blue: "from-accent-blue/30 to-transparent",
-};
+import Reveal from "@/components/Reveal";
 
 export default function Projects() {
   return (
-    <section id="projects" className="section relative">
-      <ParallaxNumeral style={{ top: "3rem", left: "1rem" }}>III</ParallaxNumeral>
-
-      <div className="relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.6 }}
-        >
-          <div className="section-label">Selected Work</div>
-          <h2 className="section-heading">
-            Things I&apos;ve <em>built</em>.
+    <section id="work" className="section border-t border-border-subtle">
+      <div className="shell">
+        <Reveal>
+          <p className="label mb-6">Selected work</p>
+          <h2 className="heading-4 md:heading-2 mb-12 max-w-prose text-ink-primary">
+            Four builds, four problems.
           </h2>
-        </motion.div>
+        </Reveal>
 
-        <div className="grid md:grid-cols-2 gap-6">
+        <ul className="grid gap-4 md:grid-cols-2">
           {projects.map((p, idx) => (
-            <TiltCard
-              key={p.title}
-              max={5}
-              className={idx === 0 ? "md:col-span-2" : ""}
-            >
-            <motion.article
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.6, delay: idx * 0.1 }}
-              className="gold-card group relative p-7 overflow-hidden h-full"
-            >
-              {/* Accent glow */}
-              <div
-                className={`absolute top-0 right-0 w-72 h-72 bg-gradient-to-bl ${
-                  glowMap[p.accent] || glowMap.gold
-                } rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none`}
-              />
-
-              <div className="relative">
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center gap-2 text-accent">
-                    <Sparkles size={16} />
-                    <span className="font-mono text-xs uppercase tracking-widest">
-                      Featured Project
-                    </span>
+            <li key={p.title} className={idx === 0 ? "md:col-span-2" : ""}>
+              <Reveal delay={Math.min(idx * 0.06, 0.24)} className="h-full">
+                <article className="card card-hover h-full p-6">
+                  <div className="mb-4 flex items-start justify-between gap-4">
+                    <h3 className="heading-6 md:heading-5 text-ink-primary">
+                      {p.title}
+                    </h3>
+                    <ArrowUpRightIcon
+                      size={20}
+                      aria-hidden="true"
+                      className="mt-1 shrink-0 text-ink-muted"
+                    />
                   </div>
-                  <ArrowUpRight
-                    size={20}
-                    className="text-ink-muted group-hover:text-accent group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-all"
-                  />
-                </div>
 
-                <h3 className="font-display text-2xl md:text-3xl text-ink-primary mb-3 leading-tight">
-                  {p.title}
-                </h3>
+                  <p className="body-6 mb-6 text-ink-secondary">{p.description}</p>
 
-                <p className="text-ink-secondary mb-5 leading-relaxed">
-                  {p.description}
-                </p>
+                  <ul className="mb-6 flex flex-col gap-2">
+                    {p.highlights.map((h) => (
+                      <li key={h} className="flex gap-3">
+                        <span
+                          aria-hidden="true"
+                          className="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent"
+                        />
+                        <span className="body-6 text-ink-secondary">{h}</span>
+                      </li>
+                    ))}
+                  </ul>
 
-                <ul className="space-y-2 mb-5">
-                  {p.highlights.map((h, i) => (
-                    <li key={i} className="flex gap-2 text-sm text-ink-secondary">
-                      <span className="text-accent mt-1">→</span>
-                      <span>{h}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                <div className="flex flex-wrap gap-2">
-                  {p.stack.map((tech) => (
-                    <span key={tech} className="tag">
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </motion.article>
-            </TiltCard>
+                  <ul className="flex flex-wrap gap-2">
+                    {p.stack.map((tech) => (
+                      <li key={tech} className="tag">
+                        {tech}
+                      </li>
+                    ))}
+                  </ul>
+                </article>
+              </Reveal>
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
     </section>
   );

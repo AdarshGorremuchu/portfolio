@@ -264,7 +264,7 @@ function PointCloud() {
       setGeometry(geo);
       start.current = performance.now();
     };
-    img.src = "/headshot.png";
+    img.src = "/headshot.webp";
   }, []);
 
   useFrame(() => {

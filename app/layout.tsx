@@ -1,60 +1,60 @@
 import type { Metadata } from "next";
-import { Inter, Playfair_Display, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import ParticleField from "@/components/ParticleField";
 
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-sans",
-  display: "swap",
-});
+/**
+ * Fonts are deliberately NOT loaded here. Each version imports its own in its
+ * frame (components/V1Frame.tsx, app/v2/layout.tsx), so a route only ever
+ * downloads the one typeface it uses.
+ */
 
-const playfair = Playfair_Display({
-  weight: ["400", "500", "600", "700"],
-  style: ["normal", "italic"],
-  subsets: ["latin"],
-  variable: "--font-display",
-  display: "swap",
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
-  display: "swap",
-});
+const title = "Adarsh Gorremuchu | AI/ML Engineer and Data Scientist";
+const description =
+  "AI/ML engineer and data scientist in Tysons, Virginia. Agent workflows and retrieval systems in production, backed by statistical modeling, fairness testing, and governance. Open to remote, hybrid, and onsite roles.";
 
 export const metadata: Metadata = {
-  title: "Adarsh Gorremuchu | AI/ML Engineer & Data Scientist",
-  description:
-    "AI/ML Engineer specializing in LLMs, RAG systems, autonomous agents, and cloud-native ML infrastructure. Currently building production AI systems at Ampcus Inc.",
+  metadataBase: process.env.VERCEL_URL
+    ? new URL(`https://${process.env.VERCEL_URL}`)
+    : new URL("http://localhost:3000"),
+  title,
+  description,
   keywords: [
     "Adarsh Gorremuchu",
     "AI Engineer",
+    "Data Scientist",
     "ML Engineer",
+    "Statistical Modeling",
+    "Disparate Impact Analysis",
     "LLM Engineer",
     "RAG",
     "AI Agents",
+    "Responsible AI",
     "Azure AI",
     "AWS",
     "Data Engineer",
     "Python",
-    "LangChain",
-    "Semantic Kernel",
+    "LangGraph",
   ],
   authors: [{ name: "Adarsh Gorremuchu" }],
   creator: "Adarsh Gorremuchu",
   openGraph: {
-    title: "Adarsh Gorremuchu | AI/ML Engineer & Data Scientist",
-    description:
-      "AI/ML Engineer building production LLM systems, autonomous agents, and cloud-native ML infrastructure.",
+    title,
+    description,
     type: "website",
     locale: "en_US",
+    images: [
+      {
+        url: "/og.png",
+        width: 1200,
+        height: 630,
+        alt: "Adarsh Gorremuchu, AI/ML engineer. AI that earns its place.",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Adarsh Gorremuchu | AI/ML Engineer & Data Scientist",
-    description:
-      "AI/ML Engineer building production LLM systems and autonomous agents.",
+    title,
+    description,
+    images: ["/og.png"],
   },
   robots: { index: true, follow: true },
 };
@@ -65,15 +65,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html
-      lang="en"
-      className={`${inter.variable} ${playfair.variable} ${jetbrainsMono.variable}`}
-    >
-      <body>
-        <ParticleField />
-        <div className="noise" />
-        {children}
-      </body>
+    <html lang="en">
+      <body>{children}</body>
     </html>
   );
 }

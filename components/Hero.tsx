@@ -3,11 +3,18 @@
 import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { motion, useReducedMotion } from "framer-motion";
-import { Linkedin, Mail, Github, ArrowRight, MapPin } from "lucide-react";
+import {
+  ArrowRightIcon,
+  EnvelopeSimpleIcon,
+  GithubLogoIcon,
+  LinkedinLogoIcon,
+  MapPinIcon,
+} from "@phosphor-icons/react/dist/ssr";
 import { personal } from "@/lib/data";
 import Magnetic from "@/components/Magnetic";
+import { EASE_BASE } from "@/components/Reveal";
 
-// Real 3D point-cloud portrait, code-split so its ~heavy three.js payload only
+// Real 3D point cloud portrait, code split so the heavy three.js payload only
 // loads on capable desktops (see the gating in HeroPortrait below).
 const ParticlePortrait3D = dynamic(
   () => import("@/components/ParticlePortrait3D"),
@@ -27,16 +34,14 @@ function supportsWebGL() {
 }
 
 /**
- * Chooses the 3D point cloud on capable desktops; otherwise renders the 2D
- * canvas portrait (which itself handles reduced-motion). Starts as 2D so SSR
- * and first paint are cheap, then upgrades after mount.
+ * Chooses the 3D point cloud on capable desktops, otherwise the 2D canvas
+ * portrait (which handles reduced motion itself). Starts as 2D so SSR and
+ * first paint stay cheap, then upgrades after mount.
  */
 function HeroPortrait() {
   const [use3D, setUse3D] = useState(false);
   useEffect(() => {
-    const reduce = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const small = window.matchMedia("(max-width: 767px)").matches;
     if (!reduce && !small && supportsWebGL()) setUse3D(true);
   }, []);
@@ -44,11 +49,8 @@ function HeroPortrait() {
 }
 
 /**
- * ParticlePortrait: samples an image (or an "AG" monogram fallback) into a
- * field of gold particles that assemble from scattered positions on mount.
- *
- * To use a real headshot: drop a high-contrast, front-facing photo at
- * /public/headshot.png and it will render the face automatically.
+ * Samples /public/headshot.webp into a field of gold particles that assemble
+ * from scattered positions on mount, repel the cursor, and shatter on click.
  */
 function ParticlePortrait() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -60,9 +62,7 @@ function ParticlePortrait() {
     if (!ctx) return;
     const c = ctx;
     const el = canvas;
-    const reduce = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     let animId = 0;
     let W = 0;
@@ -70,34 +70,33 @@ function ParticlePortrait() {
 
     interface P {
       x: number;
-      y: number; // current
+      y: number;
       tx: number;
-      ty: number; // target
+      ty: number;
       size: number;
       alpha: number;
-      depth: number; // parallax depth factor (0.4 far → 1.3 near)
+      depth: number;
       vx: number;
       vy: number;
     }
     let particles: P[] = [];
 
-    // Pointer position in canvas-local coords (off-screen until the user moves).
     let mx = -9999;
     let my = -9999;
     let pointerActive = false;
-    // Smoothed parallax offset (eases toward the cursor-driven target).
     let parX = 0;
     let parY = 0;
 
     const GOLDS = ["#c9a24a", "#e6c877", "#f5e2a8", "#b8862f"];
 
-    function buildFromSource(draw: (o: CanvasRenderingContext2D, w: number, h: number) => void) {
+    function buildFromSource(
+      draw: (o: CanvasRenderingContext2D, w: number, h: number) => void
+    ) {
       W = el.offsetWidth;
       H = el.offsetHeight;
       el.width = W;
       el.height = H;
 
-      // offscreen sample buffer
       const sampleW = 180;
       const sampleH = Math.round((H / W) * sampleW) || 180;
       const off = document.createElement("canvas");
@@ -109,7 +108,7 @@ function ParticlePortrait() {
       draw(octx, sampleW, sampleH);
 
       const data = octx.getImageData(0, 0, sampleW, sampleH).data;
-      const gap = 2; // sampling density
+      const gap = 2;
       const scaleX = W / sampleW;
       const scaleY = H / sampleH;
       const next: P[] = [];
@@ -122,7 +121,6 @@ function ParticlePortrait() {
           const b = data[i + 2];
           const a = data[i + 3];
           const bright = (r + g + b) / 3;
-          // keep opaque, non-shadow pixels
           if (a > 50 && bright > 36) {
             const tx = x * scaleX;
             const ty = y * scaleY;
@@ -132,7 +130,6 @@ function ParticlePortrait() {
               y: Math.random() * H,
               tx,
               ty,
-              // brighter facial highlights → bigger, more luminous particles
               size: 0.65 + norm * 1.75,
               alpha: Math.min(1, norm * 1.55 + 0.5),
               depth: 0.4 + norm * 0.9,
@@ -149,32 +146,27 @@ function ParticlePortrait() {
       o.fillStyle = "#ffffff";
       o.textAlign = "center";
       o.textBaseline = "middle";
-      o.font = `700 ${Math.round(h * 0.62)}px Georgia, "Playfair Display", serif`;
+      o.font = `600 ${Math.round(h * 0.62)}px Poppins, system-ui, sans-serif`;
       o.fillText("AG", w / 2, h / 2 + h * 0.02);
     }
 
     function animate() {
       const t = Date.now();
 
-      // Parallax: portrait leans toward the cursor; eases back to center on leave.
       const targetParX = pointerActive ? -((mx - W / 2) / W) * 24 : 0;
       const targetParY = pointerActive ? -((my - H / 2) / H) * 24 : 0;
       parX += (targetParX - parX) * 0.05;
       parY += (targetParY - parY) * 0.05;
 
-      // Idle breathing: gentle scale pulse + vertical bob so it feels alive.
       const breath = 1 + Math.sin(t * 0.0009) * 0.014;
       const bob = Math.sin(t * 0.0011) * 1.6;
 
       c.clearRect(0, 0, W, H);
-      // additive blending → overlapping gold particles glow
       c.globalCompositeOperation = "lighter";
-      const R = Math.max(80, W * 0.1); // cursor influence radius
+      const R = Math.max(80, W * 0.1);
       for (const p of particles) {
-        // spring back toward the portrait target
         let ax = (p.tx - p.x) * 0.022;
         let ay = (p.ty - p.y) * 0.022;
-        // repel away from the cursor
         const dx = p.x - mx;
         const dy = p.y - my;
         const d2 = dx * dx + dy * dy;
@@ -184,13 +176,11 @@ function ParticlePortrait() {
           ax += (dx / d) * force;
           ay += (dy / d) * force;
         }
-        // integrate with damping
         p.vx = (p.vx + ax) * 0.85;
         p.vy = (p.vy + ay) * 0.85;
         p.x += p.vx;
         p.y += p.vy;
 
-        // Render position: breathing scale about center + parallax (by depth) + bob.
         const rx = (p.x - W / 2) * breath + W / 2 + parX * p.depth;
         const ry = (p.y - H / 2) * breath + H / 2 + parY * p.depth + bob;
 
@@ -205,8 +195,6 @@ function ParticlePortrait() {
       animId = requestAnimationFrame(animate);
     }
 
-    // The active source draw function: starts as monogram, upgrades to the
-    // photo if /headshot.jpg loads successfully.
     const img = new Image();
     let activeDraw: (o: CanvasRenderingContext2D, w: number, h: number) => void =
       drawMonogram;
@@ -230,8 +218,8 @@ function ParticlePortrait() {
       o.drawImage(img, dx, dy, dw, dh);
     };
 
-    // Reduced-motion: render the portrait once at rest (particles on target),
-    // no assembly animation, no pointer interaction.
+    // Reduced motion: render the portrait once at rest, no assembly, no
+    // pointer interaction.
     if (reduce) {
       const drawStatic = () => {
         buildFromSource(activeDraw);
@@ -251,7 +239,7 @@ function ParticlePortrait() {
         activeDraw = drawPhoto;
         drawStatic();
       };
-      img.src = "/headshot.png";
+      img.src = "/headshot.webp";
       drawStatic();
       const roStatic = new ResizeObserver(drawStatic);
       roStatic.observe(el);
@@ -262,17 +250,14 @@ function ParticlePortrait() {
       activeDraw = drawPhoto;
       buildFromSource(activeDraw);
     };
-    img.src = "/headshot.png";
+    img.src = "/headshot.webp";
 
-    // Kick off the monogram immediately so there's never a blank frame; the
-    // photo (if present) swaps in via onload.
     buildFromSource(activeDraw);
     animate();
 
     const ro = new ResizeObserver(() => buildFromSource(activeDraw));
     ro.observe(el);
 
-    // Pointer interaction: map cursor into canvas-local coords each move.
     const track = (clientX: number, clientY: number) => {
       const rect = el.getBoundingClientRect();
       mx = clientX - rect.left;
@@ -290,13 +275,10 @@ function ParticlePortrait() {
       pointerActive = false;
     };
 
-    // Click / tap to shatter: burst every particle outward from the hit point;
-    // the spring-back reassembles the portrait over ~1.5s.
     const shatter = (clientX: number, clientY: number) => {
       const rect = el.getBoundingClientRect();
       const cxp = clientX - rect.left;
       const cyp = clientY - rect.top;
-      // only when the hit lands over the portrait area
       if (cxp < -20 || cxp > W + 20 || cyp < -20 || cyp > H + 20) return;
       for (const p of particles) {
         const dx = p.x - cxp;
@@ -324,175 +306,168 @@ function ParticlePortrait() {
     };
   }, []);
 
-  return <canvas ref={canvasRef} id="particle-canvas" aria-hidden="true" />;
+  return (
+    <canvas
+      ref={canvasRef}
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0 h-full w-full"
+    />
+  );
 }
 
 export default function Hero() {
   const reduce = useReducedMotion();
+
   const wordReveal = {
-    hidden: { opacity: reduce ? 1 : 0, y: reduce ? 0 : 18 },
+    hidden: { opacity: reduce ? 1 : 0, y: reduce ? 0 : 24 },
     show: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as const },
+      transition: { duration: 0.6, ease: EASE_BASE },
     },
   };
-  const line1 = [{ t: "AI" }, { t: "that" }, { t: "earns", gold: true }];
-  const line2 = [{ t: "its" }, { t: "place." }];
+
+  // B5: line breaks fall where the thought breaks.
+  const lines = [
+    ["AI", "that", "earns"],
+    ["its", "place."],
+  ];
 
   return (
     <section
       id="hero"
-      tabIndex={-1}
-      className="relative min-h-screen flex items-center overflow-hidden bg-bg outline-none"
+      className="relative flex min-h-screen items-center overflow-hidden bg-bg pt-24"
     >
-      {/* Radial gold glow behind portrait */}
-      <div
-        className="absolute pointer-events-none z-0"
-        style={{
-          top: "8%",
-          right: "2%",
-          width: "48%",
-          height: "80%",
-          background:
-            "radial-gradient(ellipse at center, rgba(201,162,74,0.14) 0%, transparent 65%)",
-        }}
-      />
-
-      {/* Particle portrait: right half on desktop, faded backdrop on mobile.
-          Pushed below the navbar so links stay legible on landing. */}
-      <div
-        className="absolute top-24 bottom-0 left-0 right-0 md:left-[46%] z-0 opacity-40 md:opacity-100"
-        style={{
-          // Feather the left edge so the canvas bounds never read as a hard
-          // rectangle (additive bloom lifts the buffer very slightly) and the
-          // portrait blends into the hero. Single layer: multi-layer
-          // mask-composite silently resolves to `none` here.
-          WebkitMaskImage:
-            "linear-gradient(to right, transparent 0%, black 15%)",
-          maskImage: "linear-gradient(to right, transparent 0%, black 15%)",
-        }}
-      >
+      {/* Portrait: right half on desktop, a dim full bleed backdrop on mobile.
+          On desktop a mask feathers the left edge so the canvas bounds never
+          read as a rectangle (see .portrait-mask in globals.css). */}
+      <div className="portrait-mask absolute inset-0 z-0 opacity-20 md:left-1/2 md:top-24 md:opacity-100">
         <HeroPortrait />
       </div>
 
-      {/* Content. pointer-events-none so the transparent wrapper doesn't steal
-          the cursor from the 3D portrait behind it; interactive clusters below
-          re-enable pointer events on themselves. */}
-      <div className="section relative z-10 w-full pointer-events-none">
-        <div className="max-w-2xl">
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="font-mono text-xs uppercase tracking-[0.22em] text-accent mb-6"
-          >
-            {personal.title}
-          </motion.p>
+      {/* pointer-events-none keeps the transparent wrapper from stealing the
+          cursor from the portrait behind it. Interactive clusters opt back in. */}
+      <div className="shell section relative z-10 pointer-events-none">
+        <motion.p
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1, ease: EASE_BASE }}
+          className="label mb-6"
+        >
+          {personal.title}
+        </motion.p>
 
-          <motion.h1
-            aria-label="AI that earns its place."
-            initial="hidden"
-            animate="show"
-            variants={{
-              hidden: {},
-              show: { transition: { staggerChildren: 0.09, delayChildren: 0.2 } },
-            }}
-            className="font-display font-semibold leading-[1.05] text-ink-primary mb-8"
-            style={{ fontSize: "clamp(2.6rem, 6vw, 5rem)" }}
-          >
-            <span aria-hidden="true" className="block">
-              {line1.map((w, i) => (
+        <motion.h1
+          aria-label="AI that earns its place."
+          initial="hidden"
+          animate="show"
+          variants={{
+            hidden: {},
+            show: { transition: { staggerChildren: 0.09, delayChildren: 0.2 } },
+          }}
+          className="hero-gradient heading-3 md:heading-1 mb-6 max-w-prose"
+        >
+          {lines.map((line, li) => (
+            <span aria-hidden="true" className="block" key={li}>
+              {line.map((word, wi) => (
                 <motion.span
-                  key={w.t}
+                  key={word}
                   variants={wordReveal}
-                  className={`inline-block ${i > 0 ? "ml-[0.22em]" : ""} ${
-                    w.gold ? "italic text-accent" : ""
-                  }`}
+                  className={`inline-block ${wi > 0 ? "ml-2" : ""}`}
                 >
-                  {w.t}
+                  {word}
                 </motion.span>
               ))}
             </span>
-            <span aria-hidden="true" className="block">
-              {line2.map((w, i) => (
-                <motion.span
-                  key={w.t}
-                  variants={wordReveal}
-                  className={`inline-block ${i > 0 ? "ml-[0.22em]" : ""}`}
-                >
-                  {w.t}
-                </motion.span>
-              ))}
-            </span>
-          </motion.h1>
+          ))}
+        </motion.h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.35 }}
-            className="text-lg text-ink-secondary leading-relaxed mb-10 max-w-xl"
-          >
-            {personal.tagline}
-          </motion.p>
+        <motion.p
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.35, ease: EASE_BASE }}
+          className="body-7 mb-10 max-w-prose text-ink-secondary"
+        >
+          {personal.subheadline}
+        </motion.p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.5 }}
-            className="flex flex-wrap items-center gap-4 mb-12 pointer-events-auto"
+        {/* One primary action. The resume is a plain link, not a rival CTA. */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.5, ease: EASE_BASE }}
+          className="pointer-events-auto mb-6 flex flex-wrap items-center gap-6"
+        >
+          <Magnetic>
+            <a href="#contact" className="btn-primary">
+              Send a message
+              <ArrowRightIcon size={16} aria-hidden="true" />
+            </a>
+          </Magnetic>
+          <a
+            href="/resume.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="body-6 text-ink-secondary underline decoration-border-strong underline-offset-4 transition-colors duration-300 ease-base hover:text-accent"
           >
-            <Magnetic>
-              <a href="#projects" className="btn-gold">
-                See the work <ArrowRight size={16} aria-hidden="true" />
-              </a>
-            </Magnetic>
-            <Magnetic>
-              <a href="#contact" className="btn-ghost">
-                Get in touch
-              </a>
-            </Magnetic>
-          </motion.div>
+            Read the resume
+          </a>
+        </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.7, delay: 0.7 }}
-            className="flex items-center gap-6 pointer-events-auto"
-          >
-            <span className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-ink-muted">
-              <MapPin size={13} className="text-accent" aria-hidden="true" />
-              {personal.location}
-            </span>
-            <div className="flex items-center gap-3">
+        {/* The one proof signal above the fold. */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.7, delay: 0.6, ease: EASE_BASE }}
+          className="caption-2 mb-12 max-w-prose text-ink-muted"
+        >
+          {personal.proofLine}
+        </motion.p>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.7, delay: 0.7, ease: EASE_BASE }}
+          className="pointer-events-auto flex flex-wrap items-center gap-6"
+        >
+          <span className="caption-4 flex items-center gap-2 text-ink-muted">
+            <MapPinIcon size={14} className="text-accent" aria-hidden="true" />
+            {personal.location}
+          </span>
+          <div className="flex items-center gap-3">
+            {[
+              {
+                href: personal.linkedin,
+                label: "LinkedIn",
+                Icon: LinkedinLogoIcon,
+                external: true,
+              },
+              {
+                href: personal.github,
+                label: "GitHub",
+                Icon: GithubLogoIcon,
+                external: true,
+              },
+              {
+                href: `mailto:${personal.email}`,
+                label: "Email",
+                Icon: EnvelopeSimpleIcon,
+                external: false,
+              },
+            ].map(({ href, label, Icon, external }) => (
               <a
-                href={personal.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="LinkedIn"
-                className="w-10 h-10 flex items-center justify-center rounded-full border border-border-strong text-ink-secondary hover:text-accent hover:border-accent/60 transition-all"
+                key={label}
+                href={href}
+                target={external ? "_blank" : undefined}
+                rel={external ? "noopener noreferrer" : undefined}
+                aria-label={label}
+                className="grid h-10 w-10 place-items-center rounded-full border border-border-subtle text-ink-secondary transition-colors duration-300 ease-base hover:border-border-strong hover:text-accent"
               >
-                <Linkedin size={17} aria-hidden="true" />
+                <Icon size={16} aria-hidden="true" />
               </a>
-              <a
-                href={personal.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="GitHub"
-                className="w-10 h-10 flex items-center justify-center rounded-full border border-border-strong text-ink-secondary hover:text-accent hover:border-accent/60 transition-all"
-              >
-                <Github size={17} aria-hidden="true" />
-              </a>
-              <a
-                href={`mailto:${personal.email}`}
-                aria-label="Email"
-                className="w-10 h-10 flex items-center justify-center rounded-full border border-border-strong text-ink-secondary hover:text-accent hover:border-accent/60 transition-all"
-              >
-                <Mail size={17} aria-hidden="true" />
-              </a>
-            </div>
-          </motion.div>
-        </div>
+            ))}
+          </div>
+        </motion.div>
       </div>
     </section>
   );

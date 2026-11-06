@@ -3,9 +3,10 @@
 @tailwind utilities;
 
 :root {
-  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
-  --font-display: "Playfair Display", Georgia, serif;
-  --font-mono: "JetBrains Mono", "Fira Code", monospace;
+  /* One typeface per site (B1). Set by next/font in layout.tsx. */
+  --font-sans: "Poppins", system-ui, -apple-system, sans-serif;
+  /* B7 base curve, available to raw CSS transitions. */
+  --ease-base: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 * {
@@ -15,246 +16,233 @@
 
 html {
   scroll-behavior: smooth;
+  /* Anchor targets clear the floating nav pill. */
+  scroll-padding-top: 96px;
 }
 
 body {
-  background: #060a14;
-  color: #f5f2e8;
-  font-family: var(--font-sans);
+  /* Flat background. No gradients (B4). */
+  background: #131209;
+  color: #ffffff;
   overflow-x: hidden;
 }
 
-/* Scrollbar */
-::-webkit-scrollbar { width: 9px; height: 9px; }
-::-webkit-scrollbar-track { background: #060a14; }
-::-webkit-scrollbar-thumb { background: #2a3350; border-radius: 5px; }
-::-webkit-scrollbar-thumb:hover { background: #c9a24a; }
+/* The typeface variable sits on the frame element rather than <html>, so the
+   font is only shipped to routes that render the frame. */
+.v1 {
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
 
-/* Selection */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #131209;
+}
+::-webkit-scrollbar-thumb {
+  background: #313131;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #9c7a2c;
+}
+
 ::selection {
-  background: rgba(201, 162, 74, 0.3);
+  background: rgba(201, 162, 74, 0.32);
   color: #ffffff;
 }
 
-/* Section container */
-.section {
-  max-width: 1160px;
-  margin: 0 auto;
-  padding: 7rem 1.5rem;
-}
-@media (min-width: 768px) {
-  .section { padding: 9rem 2rem; }
+@layer components {
+  /* ---------------------------------------------------------------- layout */
+
+  /* Page shell. Side gutter never drops below 16px (B10). */
+  .shell {
+    @apply mx-auto w-full max-w-shell px-4 md:px-8;
+  }
+
+  /* Section rhythm, from the B2 scale only. */
+  .section {
+    @apply py-20 md:py-24;
+  }
+
+  /* Section eyebrow label. Caption 3 with a short accent rule. */
+  .label {
+    @apply caption-3 inline-flex items-center gap-3 uppercase text-accent;
+    letter-spacing: 0.18em;
+  }
+  .label::before {
+    content: "";
+    @apply h-px w-6 bg-accent;
+  }
+
+  /* ----------------------------------------------------------------- cards */
+
+  /*
+   * Flat surface, border on all four sides (B4). Hover shifts the background
+   * and lifts by transform only (B7).
+   */
+  .card {
+    @apply rounded-2xl border border-border-subtle bg-bg-card;
+    @apply transition duration-500 ease-base;
+  }
+  .card-hover:hover {
+    @apply border-border-strong bg-bg-elev;
+    transform: translateY(-2px);
+  }
+
+  /* --------------------------------------------------------------- buttons */
+
+  /*
+   * B2: main buttons take 8px vertical and 12px horizontal padding.
+   * Active state gives physical feedback at scale(0.98) (B9).
+   */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2;
+    @apply button-md transition duration-300 ease-base;
+  }
+  .btn-primary {
+    @apply btn bg-accent text-bg;
+  }
+  .btn-primary:hover {
+    @apply bg-accent-glow;
+  }
+  .btn-primary:active {
+    transform: scale(0.98);
+  }
+  .btn-primary:disabled {
+    @apply cursor-not-allowed bg-bg-elev text-ink-muted;
+  }
+  .btn-secondary {
+    @apply btn border border-border-strong bg-transparent text-accent;
+  }
+  .btn-secondary:hover {
+    @apply border-accent bg-bg-soft;
+  }
+  .btn-secondary:active {
+    transform: scale(0.98);
+  }
+
+  /* ------------------------------------------------------------------ tags */
+
+  .tag {
+    @apply caption-5 inline-flex items-center rounded px-2 py-1;
+    @apply border border-border-subtle bg-bg-soft text-ink-secondary;
+    @apply transition duration-300 ease-base;
+  }
+  .tag:hover {
+    @apply border-border-strong text-accent;
+  }
+
+  /* ----------------------------------------------------------------- forms */
+
+  .field {
+    @apply w-full rounded-lg border border-border-subtle bg-bg-soft px-3 py-2;
+    @apply body-6 text-ink-primary placeholder:text-ink-muted;
+    @apply transition duration-300 ease-base;
+  }
+  .field:hover {
+    @apply border-border-strong;
+  }
+  .field:focus {
+    @apply border-accent outline-none;
+  }
+  .field-invalid {
+    @apply border-ink-error;
+  }
+
+  /* ------------------------------------------------------------------ text */
+
+  /*
+   * B5: the single sanctioned gradient on the whole site, and only on text.
+   * Dark theme runs #FFFFFF to #9B9B9B, left to right.
+   */
+  .hero-gradient {
+    background: linear-gradient(to right, #ffffff 0%, #9b9b9b 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
 }
 
-/* Giant translucent roman-numeral divider (lobod signature) */
-.roman-numeral {
-  position: absolute;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-style: italic;
-  color: rgba(201, 162, 74, 0.06);
-  line-height: 1;
-  pointer-events: none;
-  user-select: none;
-  font-size: clamp(6rem, 18vw, 16rem);
-  z-index: 0;
+/* Visible keyboard focus ring. Accessibility requirement, not optional (B9). */
+:where(a, button, input, textarea, select, summary, [tabindex]):focus-visible {
+  outline: 2px solid #e6c877;
+  outline-offset: 3px;
+  border-radius: 8px;
 }
 
-/* Section label: gold, letter-spaced, with rule */
-.section-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.65rem;
-  font-size: 0.75rem;
-  font-family: var(--font-mono);
-  color: #c9a24a;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  margin-bottom: 1.25rem;
+/* Skip to content: offscreen until focused (B10). Fixed, not absolute, so it
+   reaches the viewport no matter how far the page has been scrolled. */
+.skip-link {
+  position: fixed;
+  left: 16px;
+  top: -64px;
+  z-index: 100;
+  padding: 8px 12px;
+  background: #c9a24a;
+  color: #131209;
+  @apply button-sm;
+  border-radius: 8px;
+  transition: transform 500ms var(--ease-base);
 }
-.section-label::before {
-  content: "";
-  width: 28px;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, #c9a24a);
-}
-
-/* Section heading: editorial serif */
-.section-heading {
-  font-family: var(--font-display);
-  font-size: clamp(2.2rem, 5vw, 3.75rem);
-  font-weight: 600;
-  line-height: 1.08;
-  letter-spacing: -0.01em;
-  color: #f5f2e8;
-  margin-bottom: 3rem;
-}
-.section-heading em {
-  font-style: italic;
-  color: #c9a24a;
+.skip-link:focus {
+  transform: translateY(80px);
 }
 
-/* Gold gradient text */
-.gold-text {
-  background: linear-gradient(120deg, #f5f2e8 0%, #e6c877 45%, #c9a24a 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-/* Tag pill: gold-tinted on navy */
-.tag {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.3rem 0.8rem;
-  background: rgba(201, 162, 74, 0.07);
-  border: 1px solid rgba(201, 162, 74, 0.22);
-  border-radius: 4px;
-  font-size: 0.78rem;
-  color: #e6c877;
-  font-family: var(--font-mono);
-  transition: all 0.2s ease;
-}
-.tag:hover {
-  background: rgba(201, 162, 74, 0.15);
-  border-color: rgba(201, 162, 74, 0.45);
-}
-
-/* Buttons */
-.btn-gold {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.8rem 1.6rem;
-  background: linear-gradient(135deg, #e6c877, #c9a24a);
-  color: #1a1204;
-  border-radius: 4px;
-  font-weight: 600;
-  font-size: 0.9rem;
-  transition: all 0.25s ease;
-  text-decoration: none;
-  border: none;
-  cursor: pointer;
-}
-.btn-gold:hover {
-  box-shadow: 0 8px 30px rgba(201, 162, 74, 0.35);
-  transform: translateY(-1px);
-}
-.btn-gold:active {
-  transform: translateY(0) scale(0.97);
-  box-shadow: 0 2px 12px rgba(201, 162, 74, 0.25);
-}
-.btn-ghost {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.8rem 1.6rem;
-  border: 1px solid rgba(201, 162, 74, 0.4);
-  color: #e6c877;
-  border-radius: 4px;
-  font-weight: 500;
-  font-size: 0.9rem;
-  transition: all 0.25s ease;
-  text-decoration: none;
-  background: transparent;
-  cursor: pointer;
-}
-.btn-ghost:hover {
-  background: rgba(201, 162, 74, 0.08);
-  border-color: rgba(201, 162, 74, 0.7);
-}
-.btn-ghost:active {
-  transform: scale(0.97);
-}
-
-/* Card with gold border-glow on hover */
-.gold-card {
-  position: relative;
-  background: #0f1730;
-  border: 1px solid rgba(201, 162, 74, 0.14);
-  border-radius: 10px;
-  transition: border-color 0.35s ease, box-shadow 0.35s ease, transform 0.35s ease;
-}
-.gold-card:hover {
-  border-color: rgba(201, 162, 74, 0.4);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(201, 162, 74, 0.1);
-  transform: translateY(-3px);
-}
-
-/* Particle canvas */
-#particle-canvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* Subtle noise */
-.noise {
+/* Subtle film grain. Not a gradient, so B4 is satisfied. */
+.grain {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  opacity: 0.02;
-  z-index: 999;
+  opacity: 0.025;
+  z-index: 60;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
 }
 
-/* Visible keyboard-focus ring (gold). Only shows for keyboard users. */
-:where(a, button, input, textarea, select, [tabindex]):focus-visible {
-  outline: 2px solid #e6c877;
-  outline-offset: 3px;
-  border-radius: 4px;
-}
-
-/* Skip-to-content link: hidden until focused, then pinned top-left. */
-.skip-link {
-  position: absolute;
-  left: 1rem;
-  top: -3rem;
-  z-index: 1000;
-  padding: 0.6rem 1rem;
-  background: #e6c877;
-  color: #1a1204;
-  font-weight: 600;
-  font-size: 0.85rem;
-  border-radius: 4px;
-  transition: top 0.2s ease;
-}
-.skip-link:focus {
-  top: 1rem;
-}
-
-/* Nav-link underline sweep on hover/focus (also a non-color focus cue). */
-.nav-link {
-  position: relative;
-}
-.nav-link::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: -4px;
-  width: 100%;
-  height: 1px;
-  background: #c9a24a;
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.25s ease;
-}
-.nav-link:hover::after,
-.nav-link:focus-visible::after {
-  transform: scaleX(1);
-}
-
-/* Honor reduced-motion for CSS transitions/animations site-wide. */
+/* B7: movement is replaced by a plain opacity change, never left running. */
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
   *,
   *::before,
   *::after {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
-    scroll-behavior: auto !important;
+  }
+}
+
+/* Native disclosure for the FAQ: no marker, and the answer fades in with
+   opacity and transform only, since B7 forbids animating height. */
+summary {
+  list-style: none;
+}
+summary::-webkit-details-marker {
+  display: none;
+}
+details[open] .faq-answer {
+  animation: faqAnswerIn 500ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes faqAnswerIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Hero portrait: on desktop the canvas sits in the right half, so its left
+   edge is feathered. A mask is not a background, so B4 still holds. On mobile
+   the canvas is full bleed and needs no mask. */
+@media (min-width: 768px) {
+  .portrait-mask {
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15%);
+    mask-image: linear-gradient(to right, transparent 0%, black 15%);
   }
 }
