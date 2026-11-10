@@ -22,6 +22,28 @@ import * as THREE from "three";
  * Lazy-loaded (ssr:false), desktop-only via HeroPortrait gating in Hero.tsx.
  */
 
+/** Clamps to 0..1, used by the arrival sequence below. */
+const clamp01 = (n: number) => Math.min(1, Math.max(0, n));
+
+/**
+ * Deterministic PRNG (mulberry32), seeded by a constant.
+ *
+ * The point cloud used Math.random() for its edge fade, its position jitter
+ * and its scatter start, so every page load built a different portrait. That
+ * is why the hero never matched between two tabs, or between local and
+ * production: not the animation, the cloud itself. Same sequence every load
+ * means the same face every load, with the jitter's character unchanged.
+ */
+function makeRandom(seed: number) {
+  let a = seed >>> 0;
+  return () => {
+    a = (a + 0x6d2b79f5) >>> 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
 const vertexShader = /* glsl */ `
   uniform float uTime;
   uniform float uProgress;
@@ -29,6 +51,9 @@ const vertexShader = /* glsl */ `
   uniform float uSize;
   uniform float uPixelRatio;
   uniform float uRadius;
+  uniform float uSweepY;  // height of the arrival sweep
+  uniform float uSweepOn; // 1 while it travels, 0 once it has passed
+  uniform float uSettle;  // 0 while arriving, 1 once at rest
 
   attribute vec3  aColor;
   attribute vec3  aScatter;
@@ -44,19 +69,27 @@ const vertexShader = /* glsl */ `
     vec3 pos = mix(aScatter, position, uProgress);
 
     float ph = aSeed * 6.2831853;
-    // Idle breathing so it feels alive at rest (kept small to stay sharp).
-    pos.z += sin(uTime * 0.8 + ph) * 0.02 * uProgress;
+    /*
+     * Breathing is coherent (no per-particle phase) and small. Giving each
+     * particle its own phase made the cloud reshuffle continuously, so the
+     * face read differently on every glance and no two loads ever matched.
+     * Moving as one keeps the portrait fixed and still feels alive.
+     */
+    float breath = 0.012 * (1.0 - uSettle * 0.88);
+    pos.z += sin(uTime * 0.6) * breath * uProgress;
 
     // Illuminate-only cursor: no displacement, just glow + size falloff.
     float dist = distance(pos, uMouse);
     vGlow = smoothstep(uRadius, 0.0, dist) * uProgress;
 
-    // Signature moment: a gold light sweep travelling up the portrait every 7s.
-    float cycle = fract(uTime / 7.0) * 3.4 - 1.7;
-    vSweep = smoothstep(0.28, 0.0, abs(pos.y - cycle)) * uProgress;
+    // Signature moment, now a single pass on arrival rather than a 7s loop.
+    vSweep = smoothstep(0.28, 0.0, abs(pos.y - uSweepY)) * uProgress * uSweepOn;
 
-    vColor   = aColor;
-    vTwinkle = 0.88 + 0.14 * sin(uTime * 1.8 + ph * 3.0);
+    vColor = aColor;
+    // Lively while assembling, almost steady once settled, and a touch
+    // brighter at rest so the features stay legible.
+    float amp = 0.14 * (1.0 - uSettle * 0.88);
+    vTwinkle = (0.88 + uSettle * 0.06) + amp * sin(uTime * 1.8 + ph * 3.0);
 
     vec4 mv = modelViewMatrix * vec4(pos, 1.0);
     gl_PointSize =
@@ -110,6 +143,9 @@ function PointCloud() {
         uniforms: {
           uTime: { value: 0 },
           uProgress: { value: 0 },
+          uSweepY: { value: -1.7 },
+          uSweepOn: { value: 0 },
+          uSettle: { value: 0 },
           uMouse: { value: new THREE.Vector3(999, 999, 999) },
           uSize: { value: 2.9 },
           uRadius: { value: 0.42 },
@@ -191,6 +227,7 @@ function PointCloud() {
       const aspect = sw / sh;
       const S = 3.2;
       const J = 0.0035; // low jitter: heavy jitter smears fine facial detail
+      const rand = makeRandom(0x5ada12); // fixed seed, so the cloud is stable
 
       // Gold ramp: deep antique gold in shadow, champagne in highlight.
       const C0 = [0.62, 0.45, 0.16];
@@ -221,30 +258,30 @@ function PointCloud() {
           const v = y / sh - 0.5;
           const dd = Math.hypot(u * 1.25, v);
           const keep = dd < 0.47 ? 1 : Math.max(0, 1 - (dd - 0.47) / 0.1);
-          if (keep < 1 && Math.random() > keep) continue;
+          if (keep < 1 && rand() > keep) continue;
 
           const norm = bright / 255;
           positions.push(
-            (x / sw - 0.5) * aspect * S + (Math.random() - 0.5) * J,
-            -(y / sh - 0.5) * S + (Math.random() - 0.5) * J,
-            (norm - 0.42) * 0.8 + (Math.random() - 0.5) * J
+            (x / sw - 0.5) * aspect * S + (rand() - 0.5) * J,
+            -(y / sh - 0.5) * S + (rand() - 0.5) * J,
+            (norm - 0.42) * 0.8 + (rand() - 0.5) * J
           );
 
           // Scattered start on a sphere for the assembly intro.
-          const theta = Math.random() * Math.PI * 2;
-          const phi = Math.acos(2 * Math.random() - 1);
-          const rad = 3 + Math.random() * 4;
+          const theta = rand() * Math.PI * 2;
+          const phi = Math.acos(2 * rand() - 1);
+          const rad = 3 + rand() * 4;
           scatter.push(
             Math.sin(phi) * Math.cos(theta) * rad,
             Math.sin(phi) * Math.sin(theta) * rad,
             Math.cos(phi) * rad
           );
 
-          seeds.push(Math.random());
+          seeds.push(rand());
 
           // Colour from the pixel's own luminance so facial shading survives.
           const t = Math.min(1, Math.max(0, (norm - 0.12) / 0.66));
-          const j = 0.92 + Math.random() * 0.16;
+          const j = 0.92 + rand() * 0.16;
           colors.push(
             (C0[0] + (C1[0] - C0[0]) * t) * j,
             (C0[1] + (C1[1] - C0[1]) * t) * j,
@@ -272,9 +309,27 @@ function PointCloud() {
     if (!pts) return;
     const u = material.uniforms;
 
-    u.uTime.value = (performance.now() - start.current) / 1000;
-    const p = Math.min(1, u.uTime.value / 2.7);
+    const t = (performance.now() - start.current) / 1000;
+    u.uTime.value = t;
+
+    // Assemble from the scattered sphere.
+    const p = Math.min(1, t / 2.7);
     u.uProgress.value = 1 - Math.pow(1 - p, 3);
+
+    /*
+     * Arrival sequence, then rest. The sweep makes one pass up the portrait
+     * and is finished for good; uSettle then winds the remaining motion down,
+     * so the hero comes to a stable, readable portrait instead of shifting
+     * forever. Two visits now land on the same image.
+     */
+    const SWEEP_START = 1.0;
+    const SWEEP_DUR = 3.2;
+    const sp = (t - SWEEP_START) / SWEEP_DUR;
+    u.uSweepY.value = -1.7 + clamp01(sp) * 3.4;
+    u.uSweepOn.value = sp <= 0 ? 0 : clamp01(1 - (sp - 1) / 0.25);
+
+    const raw = clamp01((t - SWEEP_START - SWEEP_DUR) / 1.2);
+    u.uSettle.value = raw * raw * (3 - 2 * raw); // smoothstep
 
     // Rotation: drag dominates, with a small lean toward the cursor.
     const rect = gl.domElement.getBoundingClientRect();
