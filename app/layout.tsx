@@ -12,9 +12,13 @@ const description =
   "AI/ML engineer and data scientist in Tysons, Virginia. Agent workflows and retrieval systems in production, backed by statistical modeling, fairness testing, and governance. Open to remote, hybrid, and onsite roles.";
 
 export const metadata: Metadata = {
-  metadataBase: process.env.VERCEL_URL
-    ? new URL(`https://${process.env.VERCEL_URL}`)
-    : new URL("http://localhost:3000"),
+  /*
+   * The canonical origin, hardcoded on purpose. VERCEL_URL resolves to the
+   * per-deployment preview host (portfolio-<hash>.vercel.app), which made
+   * og:image point at a URL that serves HTML rather than the image and that
+   * changes on every deploy, so link previews broke.
+   */
+  metadataBase: new URL("https://www.adarshgorremuchu.com"),
   title,
   description,
   keywords: [
